@@ -497,6 +497,11 @@ define("forum/topic/postTools", [
                                     postContent.append(
                                         `<div class="endorsement">${endorsedMessage}</div>`
                                     );
+
+                                    localStorage.setItem(
+                                        `endorsement_${toPid}`,
+                                        endorsedMessage
+                                    );
                                 }
                             }
                         }
@@ -563,47 +568,24 @@ define("forum/topic/postTools", [
 
  */
 
-    // Save endorsement data to localStorage
-    /*     function saveEndorsementData(endorsementData) {
-        const endorsementDataString = JSON.stringify(endorsementData);
-        localStorage.setItem("endorsementData", endorsementDataString);
-    }
-
-    function getEndorsementData() {
-        // Retrieve endorsement data from local storage
-        const endorsementDataString = localStorage.getItem("endorsementData");
-
-        // If endorsementDataString is null or undefined, initialize endorsementData as an empty object
-        const endorsementData = endorsementDataString
-            ? JSON.parse(endorsementDataString)
-            : {};
-
-        return endorsementData;
-    } */
-
-    /* $(document).ready(function () {
-        // Retrieve endorsement information from local storage
-        const endorsementData = getEndorsementData();
-
-        // Loop through each post
-        $('[component="post"]').each(function () {
-            const postId = $(this).data("pid");
-
-            // Check if there is an endorsement flag for this post
-            if (endorsementData[postId]) {
-                const endorsedMessage = "Instructor has endorsed this message";
-
-                // Find the content element within the post
+    // Inside a function that runs on page load
+    function onPageLoad() {
+        // Iterate through all posts on the page
+        $("[data-pid]").each(function () {
+            const postId = $(this).attr("data-pid");
+            const endorsement = localStorage.getItem(`endorsement_${postId}`);
+            if (endorsement) {
                 const postContent = $(this).find('[component="post/content"]');
-
-                // Check if the post has been endorsed and display the endorsement message
-                if (endorsementData[postId] === true) {
-                    postContent.append(`<div class="endorsement">${endorsedMessage}</div>`);
-                }
+                postContent.append(
+                    `<div class="endorsement">${endorsement}</div>`
+                );
             }
         });
+    }
+
+    $(document).ready(function () {
+        onPageLoad();
     });
-     */
 
     async function getSelectedNode() {
         let selectedText = "";
