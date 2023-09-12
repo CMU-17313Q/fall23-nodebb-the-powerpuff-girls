@@ -519,55 +519,6 @@ define("forum/topic/postTools", [
         });
     }
 
-    /* async function onEndorseClicked(button, tid) {
-        const selectedNode = await getSelectedNode();
-        showStaleWarning(async function () {
-            const username = await getUserSlug(button);
-            const toPid = button.is('[component="post/endorse"]')
-                ? getData(button, "data-pid")
-                : null;
-
-            // Check if the user has instructor privileges
-            // const userHasInstructorPrivileges = checkUserPrivileges(); // Implement this function
-            const userHasInstructorPrivileges = true;
-
-            if (userHasInstructorPrivileges) {
-                bootbox.confirm(
-                    "Are you sure you want to endorse this answer?",
-                    function (confirm) {
-                        if (confirm) {
-                            // Instructor confirmed the endorsement, perform the endorsement logic here
-                            const endorsedMessage =
-                                "Instructor has endorsed this message";
-                            const endorsementData = getEndorsementData();
-
-                            // Append the endorsed message below the body of the post/reply
-                            const post = button.parents("[data-pid]");
-                            if (post.length > 0) {
-                                console.log("This is a debug message.");
-                                // Check if the post has not been endorsed yet
-                                if (!endorsementData[toPid]) {
-                                    const postContent = post.find(
-                                        '[component="post/content"]'
-                                    );
-                                    if (postContent.length > 0) {
-                                        postContent.append(
-                                            `<div class="endorsement">${endorsedMessage}</div>`
-                                        );
-
-                                        // Update endorsement data and save it
-                                        endorsementData[toPid] = true;
-                                        saveEndorsementData(endorsementData);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                );
-
-
- */
-
     // Inside a function that runs on page load
     function onPageLoad() {
         // Iterate through all posts on the page
@@ -583,7 +534,11 @@ define("forum/topic/postTools", [
         });
     }
 
-    $(document).ready(function () {
+    $(function () {
+        onPageLoad();
+    });
+
+    $(window).on("action:ajaxify.end", function () {
         onPageLoad();
     });
 
