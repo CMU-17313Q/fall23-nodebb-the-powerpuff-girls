@@ -29,6 +29,7 @@ define("forum/topic/postTools", [
     const PostTools = {};
 
     let staleReplyAnyway = false;
+    let currentButton;
 
     PostTools.init = function (tid) {
         staleReplyAnyway = false;
@@ -465,7 +466,7 @@ define("forum/topic/postTools", [
         });
     }
 
-    /* async function onEndorseClicked(button, tid) {
+    /* async function onEndorseClicked(button, tid) { -- first simple
         const selectedNode = await getSelectedNode();
         console.log("This is a debug message.");
         showStaleWarning(async function () {
@@ -553,10 +554,12 @@ define("forum/topic/postTools", [
             // Display or hide the endorsement message based on the action
             if (method === "put") {
                 if (postContent.length > 0) {
-                    postContent.append(`endorsed`);
+                    postContent.append(`endorsed `);
+                    localStorage.setItem(`endorsementState-${pid}`, "true");
                 }
             } else {
-                postContent.append(`unendorsed`);
+                postContent.append(`unendorsed `);
+                localStorage.setItem(`endorsementState-${pid}`, "false");
             }
 
             hooks.fire(`action:post.${type}`, { pid: pid });
@@ -566,6 +569,55 @@ define("forum/topic/postTools", [
             `API Request Method: ${method}, URL: /posts/${pid}/endorse`
         );
     }
+
+    /* function checkEndorsementState() {
+        const isEndorsed = localStorage.getItem("endorsementState") === "true";
+        console.log(postContent);
+
+        // Display or hide the endorsement message based on the state
+        if (postContent && postContent.length > 0) {
+            if (isEndorsed) {
+                // Display the endorsement message
+                postContent.append(`endorsed`);
+            } else {
+                // Display the unendorsed message or clear the content
+                postContent.empty();
+                // or postContent.html(""); to clear the content
+                postContent.append(`unendorsed`);
+            }
+        }
+    } */
+
+    // Inside a function that runs on page load
+    function onPageLoad() {
+        // Iterate through all posts on the page
+        $("[data-pid]").each(function () {
+            const postId = $(this).attr("data-pid");
+            const isEndorsed = localStorage.getItem(
+                `endorsementState-${postId}`
+            ); // Use a unique key for each post
+            console.log(postId);
+            console.log(isEndorsed);
+            const postContent = $(this).find('[component="post/content"]');
+            if (isEndorsed === "true") {
+                console.log(postId);
+                postContent.append("endorsed ");
+            } else {
+                // console.log(postId);
+                postContent.append("unendorsed ");
+            }
+        });
+    }
+
+    /* $(function () {
+        onPageLoad();
+    }); */
+
+    $(window).on("action:ajaxify.end", function () {
+        onPageLoad();
+    });
+
+    // window.addEventListener("load", checkEndorsementState);
 
     async function getSelectedNode() {
         let selectedText = "";
