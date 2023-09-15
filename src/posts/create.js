@@ -52,6 +52,8 @@ module.exports = function (Posts) {
             postData.uid = null;
             postData.handle = "Anonymous"
             postData.isAnonymous = true;
+        } else {
+            postData.isAnonymous = false;
         }
 
         let result = await plugins.hooks.fire('filter:post.create', { post: postData, data: data });
