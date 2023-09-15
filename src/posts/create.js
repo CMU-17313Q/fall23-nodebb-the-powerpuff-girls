@@ -47,7 +47,7 @@ module.exports = function (Posts) {
             postData.handle = data.handle;
         }
 
-        // Adding the Anonymous feature
+        // Adding and checking if Anonymous feature is enabled
         if (data.postVisibility === "anonymous"){
             postData.uid = null;
             postData.handle = "Anonymous"
