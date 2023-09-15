@@ -50,15 +50,6 @@
 <br />
 
 <div class="content" component="post/content" itemprop="text">
-    <div class="visibility-dropdown">
-        <label for="postVisibility">Post Visibility: </label>
-        <select id="postVisibility" name="postVisibility">
-            <option value="visible">Public</option>
-            <option value="anonymous">Anonymous</option>
-        </select>
-    </div>
-    </br>
-    
     {posts.content}
 </div>
 
