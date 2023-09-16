@@ -545,6 +545,7 @@ define("forum/topic/postTools", [
             );
 
             const endorsedMessage = "Instructor has endorsed this message";
+            const unendorsedMessage = "Instructor has unendorsed this message";
 
             const post = button.parents("[data-pid]");
 
@@ -554,12 +555,34 @@ define("forum/topic/postTools", [
             // Display or hide the endorsement message based on the action
             if (method === "put") {
                 if (postContent.length > 0) {
-                    postContent.append(`endorsed `);
-                    localStorage.setItem(`endorsementState-${pid}`, "true");
+                    bootbox.confirm(
+                        "Are you sure you want to endorse this answer?",
+                        function (confirm) {
+                            postContent.append(
+                                `<div class="endorsement">${endorsedMessage}</div>`
+                            );
+                            // postContent.append(`endorsed `);
+                            localStorage.setItem(
+                                `endorsementState-${pid}`,
+                                "true"
+                            );
+                        }
+                    );
                 }
             } else {
-                postContent.append(`unendorsed `);
-                localStorage.setItem(`endorsementState-${pid}`, "false");
+                bootbox.confirm(
+                    "Are you sure you want to unendorse this answer?",
+                    function (confirm) {
+                        postContent.append(
+                            `<div class="endorsement">${unendorsedMessage}</div>`
+                        );
+                        // postContent.append(`endorsed `);
+                        localStorage.setItem(
+                            `endorsementState-${pid}`,
+                            "false"
+                        );
+                    }
+                );
             }
 
             hooks.fire(`action:post.${type}`, { pid: pid });
