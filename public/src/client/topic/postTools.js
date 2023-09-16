@@ -522,9 +522,7 @@ define("forum/topic/postTools", [
         const allowedMethods = ["put", "del"];
 
         // Check if the method is allowed
-        const method =
-            button.attr("data-is-endorsed") === "false" ? "put" : "del";
-
+        const method = button.attr("data-is-endorsed") === "false" ? "put" : "del";
         if (!allowedMethods.includes(method)) {
             console.error(`Invalid method: ${method}`);
             return;
@@ -544,9 +542,6 @@ define("forum/topic/postTools", [
                 method === "put" ? "true" : "false"
             );
 
-            const endorsedMessage = "Instructor has endorsed this message";
-            const unendorsedMessage = "Instructor has unendorsed this message";
-
             const post = button.parents("[data-pid]");
 
             // Find the content element within the post
@@ -558,14 +553,7 @@ define("forum/topic/postTools", [
                     bootbox.confirm(
                         "Are you sure you want to endorse this answer?",
                         function (confirm) {
-                            postContent.append(
-                                `<div class="endorsement">${endorsedMessage}</div>`
-                            );
-                            // postContent.append(`endorsed `);
-                            localStorage.setItem(
-                                `endorsementState-${pid}`,
-                                "true"
-                            );
+                            post.find('[component="post/is-endorsed"]').removeClass("hidden");
                         }
                     );
                 }
@@ -573,14 +561,7 @@ define("forum/topic/postTools", [
                 bootbox.confirm(
                     "Are you sure you want to unendorse this answer?",
                     function (confirm) {
-                        postContent.append(
-                            `<div class="endorsement">${unendorsedMessage}</div>`
-                        );
-                        // postContent.append(`endorsed `);
-                        localStorage.setItem(
-                            `endorsementState-${pid}`,
-                            "false"
-                        );
+                        post.find('[component="post/is-endorsed"]').addClass("hidden");
                     }
                 );
             }
@@ -614,11 +595,13 @@ define("forum/topic/postTools", [
     // Inside a function that runs on page load
     function onPageLoad() {
         // Iterate through all posts on the page
-        $("[data-pid]").each(function () {
+        /* $("[data-pid]").each(function () {
             const postId = $(this).attr("data-pid");
+
             const isEndorsed = localStorage.getItem(
                 `endorsementState-${postId}`
             ); // Use a unique key for each post
+
             console.log(postId);
             console.log(isEndorsed);
             const postContent = $(this).find('[component="post/content"]');
@@ -629,7 +612,7 @@ define("forum/topic/postTools", [
                 // console.log(postId);
                 postContent.append("unendorsed ");
             }
-        });
+        }); */
     }
 
     /* $(function () {

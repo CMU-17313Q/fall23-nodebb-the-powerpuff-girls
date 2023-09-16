@@ -32,6 +32,10 @@ define('components', function () {
             return $('[component="post"][data-pid="' + pid + '"] [component="post/bookmark-count"]');
         },
 
+        'post/is-endorsed': function (pid) {
+            return $('[component="post"][data-pid="' + pid + '"] [component="post/is-endorsed"]');
+        },
+
         'user/postcount': function (uid) {
             return $('[component="user/postcount"][data-uid="' + uid + '"]');
         },

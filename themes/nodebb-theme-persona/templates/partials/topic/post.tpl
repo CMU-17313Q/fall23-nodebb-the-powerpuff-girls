@@ -51,6 +51,7 @@
 
 <div class="content" component="post/content" itemprop="text">
     {posts.content}
+    <div component="post/is-endorsed" class="hidden">Instructor has endorsed the answer</div>
 </div>
 
 <div class="post-footer">
