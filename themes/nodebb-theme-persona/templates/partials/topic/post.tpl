@@ -51,6 +51,7 @@
 
 <div class="content" component="post/content" itemprop="text">
     {posts.content}
+    <span component="post/content-tag" class="tag-badge" style="background-color: orange; float: right;  color: white; padding: 4px 8px; text-align: center; border-radius: 2px;">Review Needed</span>
 </div>
 
 <div class="post-footer">
@@ -82,6 +83,7 @@
             <a component="post/reply" href="#" class="no-select <!-- IF !privileges.topics:reply -->hidden<!-- ENDIF !privileges.topics:reply -->">[[topic:reply]]</a>
             <a component="post/quote" href="#" class="no-select <!-- IF !privileges.topics:reply -->hidden<!-- ENDIF !privileges.topics:reply -->">[[topic:quote]]</a>
             <a component="post/endorse" href="#" class="no-select <!-- IF !privileges.topics:reply -->hidden<!-- ENDIF !privileges.topics:reply -->">[[topic:endorse]]</a>
+
         </span>
 
         <!-- IF !reputation:disabled -->

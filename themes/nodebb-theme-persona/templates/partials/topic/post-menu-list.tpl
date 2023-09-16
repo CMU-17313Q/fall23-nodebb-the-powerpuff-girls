@@ -100,6 +100,10 @@
             <a role="menuitem" component="share/{postSharing.id}" tabindex="-1" href="#"><span class="menu-icon"><i class="fa fa-fw {postSharing.class}"></i></span> {postSharing.name}</a>
         </li>
     {{{end}}}
+    <!-- adding tags here [Gulnaz] -->
+    <li>
+    <a component="post/tag" role="menuitem" tabindex="-1" tagged = "false" href="#"><i class="fa fa-message-pen"></i> Review needed</a>
+    </li>   
 <!-- ENDIF !posts.deleted -->
 
 {{{ if posts.display_flag_tools }}}
@@ -108,6 +112,7 @@
 <li {{{ if posts.flags.flagged }}}hidden{{{ end }}}>
     <a component="post/flag" role="menuitem" tabindex="-1" href="#"><i class="fa fa-fw fa-flag"></i> [[topic:flag-post]]</a>
 </li>
+
 <li {{{ if !posts.flags.flagged }}}hidden{{{ end }}} class="disabled text-muted">
     <a component="post/already-flagged" role="menuitem" tabindex="-1" href="#"><i class="fa fa-fw fa-flag"></i> [[topic:already-flagged]]</a>
 </li>

@@ -145,7 +145,29 @@ define("forum/topic/postTools", [
             onEndorseClicked($(this), tid);
         });
 
-        $(".topic").on("click", '[component="topic/reply"]', function (e) {
+        postContainer.on('click', '[component="post/tag"]', function () {
+            console.log('hello');
+            const postEl = components.get('post', 'pid', tid);
+            // const postEl = components.get('post');
+            postEl.find('[component="post/content-tag"]').toggleClass('hidden');
+
+            /* const tagBadge = postEl.find('[component="post/content-tag"]');
+            if (tagBadge.classList.contains('hidden')) {
+                tagBadge.classList.remove('hidden');
+            } else {
+                tagBadge.classList.add('hidden');
+            } */
+        });
+
+
+
+
+
+
+
+
+
+        $('.topic').on('click', '[component="topic/reply"]', function (e) {
             e.preventDefault();
             onReplyClicked($(this), tid);
         });
