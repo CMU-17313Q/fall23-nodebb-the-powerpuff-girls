@@ -535,13 +535,6 @@ define("forum/topic/postTools", [
             }
             const type = method === "put" ? "endorse" : "unendorse";
 
-            // Update the button's text and data-is-endorsed attribute
-            button.text(method === "put" ? "Unendorse" : "Endorse");
-            button.attr(
-                "data-is-endorsed",
-                method === "put" ? "true" : "false"
-            );
-
             const post = button.parents("[data-pid]");
 
             // Find the content element within the post
@@ -554,6 +547,12 @@ define("forum/topic/postTools", [
                         "Are you sure you want to endorse this answer?",
                         function (confirm) {
                             post.find('[component="post/is-endorsed"]').removeClass("hidden");
+                            // Update the button's text and data-is-endorsed attribute
+                            button.text(method === "put" ? "Unendorse" : "Endorse");
+                            button.attr(
+                                "data-is-endorsed",
+                                method === "put" ? "true" : "false"
+                            );
                         }
                     );
                 }
@@ -562,6 +561,12 @@ define("forum/topic/postTools", [
                     "Are you sure you want to unendorse this answer?",
                     function (confirm) {
                         post.find('[component="post/is-endorsed"]').addClass("hidden");
+                        // Update the button's text and data-is-endorsed attribute
+                        button.text(method === "put" ? "Unendorse" : "Endorse");
+                        button.attr(
+                            "data-is-endorsed",
+                            method === "put" ? "true" : "false"
+                        );
                     }
                 );
             }
