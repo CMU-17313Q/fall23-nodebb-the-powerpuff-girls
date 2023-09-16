@@ -171,7 +171,7 @@ module.exports = function (middleware) {
 
         const uid = req.params.uid || await user.getUidByUserslug(req.params.userslug);
         let allowed = await privileges.users.canEdit(req.uid, uid);
-        if (allowed) {
+        if (allowed || userData['account-type'] == 'instructor') {
             return next();
         }
 
