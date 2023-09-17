@@ -632,10 +632,6 @@ define("forum/topic/postTools", [
         });
     }
 
-    /* $(function () {
-        onPageLoad();
-    }); */
-
     $(window).on("action:ajaxify.end", function () {
         onPageLoad();
     });
