@@ -51,6 +51,7 @@
 
 <div class="content" component="post/content" itemprop="text">
     {posts.content}
+    <div component="post/is-endorsed" style="text-align: center; color: green; font-weight: bold;" class="<!-- IF posts.isEndorsed -->hidden<!-- ENDIF posts.isEndorsed -->">Instructor has endorsed the answer</div>
 </div>
 
 <div class="post-footer">

@@ -58,6 +58,14 @@ define("components", function () {
             );
         },
 
+        "post/is-endorsed": function (pid) {
+            return $(
+                '[component="post"][data-pid="' +
+                    pid +
+                    '"] [component="post/is-endorsed"]'
+            );
+        },
+
         "user/postcount": function (uid) {
             return $('[component="user/postcount"][data-uid="' + uid + '"]');
         },
