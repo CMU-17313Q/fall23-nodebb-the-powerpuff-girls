@@ -162,12 +162,6 @@ define('forum/topic/postTools', [
             const postEditDuration = parseInt(ajaxify.data.postEditDuration, 10);
 
             if (checkDuration(postEditDuration, timestamp, 'post-edit-duration-expired')) {
-                if (userData['account-type'] === 'instructor') {
-                    // Allow instructors to edit posts
-                    hooks.fire('action:composer.post.edit', {
-                        pid: getData(btn, 'data-pid'),
-                    });
-                }
                 hooks.fire('action:composer.post.edit', {
                     pid: getData(btn, 'data-pid'),
                 });

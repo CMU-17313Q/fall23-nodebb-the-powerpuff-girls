@@ -107,25 +107,8 @@ module.exports = function (middleware) {
         await ensureSelfOrMethod(user.isAdminOrGlobalMod, req, res, next);
     });
 
-    // middleware.ensureSelfOrPrivileged = helpers.try(async (req, res, next) => {
-    //     await ensureSelfOrMethod(user.isPrivileged, req, res, next);
-    // });
-
     middleware.ensureSelfOrPrivileged = helpers.try(async (req, res, next) => {
-        // Check if the user is an instructor
-        const userData = req.body;
-        //const isUserInstructor = await checkInstructorPrivileges(req.uid);
-    
-        if (req.uid === parseInt(res.locals.uid, 10) || userData['account-type'] !== 'instructor') {
-            return next();
-        }
-    
-        const allowed = await user.isPrivileged(req.uid);
-        if (!allowed) {
-            return controllers.helpers.notAllowed(req, res);
-        }
-    
-        return next();
+        await ensureSelfOrMethod(user.isPrivileged, req, res, next);
     });
 
     async function ensureSelfOrMethod(method, req, res, next) {
@@ -188,8 +171,7 @@ module.exports = function (middleware) {
 
         const uid = req.params.uid || await user.getUidByUserslug(req.params.userslug);
         let allowed = await privileges.users.canEdit(req.uid, uid);
-        const userData = req.body;
-        if (allowed || userData['account-type'] === 'instructor') {
+        if (allowed) {
             return next();
         }
 

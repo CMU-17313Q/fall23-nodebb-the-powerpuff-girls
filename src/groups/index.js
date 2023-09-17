@@ -30,6 +30,8 @@ Groups.systemGroups = [
     'registered-users',
     'verified-users',
     'unverified-users',
+    'students',
+    'instructors',
     Groups.BANNED_USERS,
     'administrators',
     'Global Moderators',

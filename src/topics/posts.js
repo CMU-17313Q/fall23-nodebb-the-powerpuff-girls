@@ -6,6 +6,7 @@ const validator = require('validator');
 const nconf = require('nconf');
 
 const db = require('../database');
+const privileges = require('../privileges');
 const user = require('../user');
 const posts = require('../posts');
 const meta = require('../meta');
@@ -129,6 +130,8 @@ module.exports = function (Topics) {
             Topics.addParentPosts(postData),
         ]);
 
+        const isPersonInstructor = await privileges.users.isInstructor(parseInt(uid, 10));
+
         postData.forEach((postObj, i) => {
             if (postObj) {
                 postObj.user = postObj.uid ? userData[postObj.uid] : { ...userData[postObj.uid] };
@@ -155,26 +158,57 @@ module.exports = function (Topics) {
         return result.posts;
     };
 
-    Topics.modifyPostsByPrivilege = function (topicData, topicPrivileges) {
+    // Topics.modifyPostsByPrivilege = function (topicData, topicPrivileges) {
+    //     const loggedIn = parseInt(topicPrivileges.uid, 10) > 0;
+    //     topicData.posts.forEach((post) => {
+    //         if (post) {
+    //             post.topicOwnerPost = parseInt(topicData.uid, 10) === parseInt(post.uid, 10);
+    //             post.display_edit_tools = topicPrivileges.isAdminOrMod || (post.selfPost && topicPrivileges['posts:edit']);
+    //             post.display_delete_tools = topicPrivileges.isAdminOrMod || (post.selfPost && topicPrivileges['posts:delete']);
+    //             post.display_moderator_tools = post.display_edit_tools || post.display_delete_tools;
+    //             post.display_move_tools = topicPrivileges.isAdminOrMod && post.index !== 0;
+    //             post.display_post_menu = topicPrivileges.isAdminOrMod ||
+    //                 (post.selfPost &&
+    //                     ((!topicData.locked && !post.deleted) ||
+    //                     (post.deleted && parseInt(post.deleterUid, 10) === parseInt(topicPrivileges.uid, 10)))) ||
+    //                 ((loggedIn || topicData.postSharing.length) && !post.deleted);
+    //             post.ip = topicPrivileges.isAdminOrMod ? post.ip : undefined;
+
+    //             posts.modifyPostByPrivilege(post, topicPrivileges);
+    //         }
+    //     });
+    // };
+
+    Topics.modifyPostsByPrivilege = function (topicData, topicPrivileges, isPersonInstructor) {
         const loggedIn = parseInt(topicPrivileges.uid, 10) > 0;
+    
+        // Check if the user is an instructor
+        const isUserInstructor = isPersonInstructor; // Use the isPersonInstructor variable
+    
         topicData.posts.forEach((post) => {
             if (post) {
                 post.topicOwnerPost = parseInt(topicData.uid, 10) === parseInt(post.uid, 10);
-                post.display_edit_tools = topicPrivileges.isAdminOrMod || (post.selfPost && topicPrivileges['posts:edit']);
-                post.display_delete_tools = topicPrivileges.isAdminOrMod || (post.selfPost && topicPrivileges['posts:delete']);
+                post.display_edit_tools =
+                    topicPrivileges.isAdminOrMod ||
+                    (post.selfPost && topicPrivileges['posts:edit']) ||
+                    (isUserInstructor && !post.deleted); // Grant edit privileges to instructors
+                post.display_delete_tools =
+                    topicPrivileges.isAdminOrMod ||
+                    (post.selfPost && topicPrivileges['posts:delete']);
                 post.display_moderator_tools = post.display_edit_tools || post.display_delete_tools;
                 post.display_move_tools = topicPrivileges.isAdminOrMod && post.index !== 0;
-                post.display_post_menu = topicPrivileges.isAdminOrMod ||
+                post.display_post_menu =
+                    topicPrivileges.isAdminOrMod ||
                     (post.selfPost &&
                         ((!topicData.locked && !post.deleted) ||
                         (post.deleted && parseInt(post.deleterUid, 10) === parseInt(topicPrivileges.uid, 10)))) ||
                     ((loggedIn || topicData.postSharing.length) && !post.deleted);
                 post.ip = topicPrivileges.isAdminOrMod ? post.ip : undefined;
-
+    
                 posts.modifyPostByPrivilege(post, topicPrivileges);
             }
         });
-    };
+    };    
 
     Topics.addParentPosts = async function (postData) {
         let parentPids = postData.map(postObj => (postObj && postObj.hasOwnProperty('toPid') ? parseInt(postObj.toPid, 10) : null)).filter(Boolean);

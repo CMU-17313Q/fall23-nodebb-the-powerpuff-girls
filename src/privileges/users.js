@@ -23,6 +23,14 @@ async function isGroupMember(uid, groupName) {
     return await groups[Array.isArray(uid) ? 'isMembers' : 'isMember'](uid, groupName);
 }
 
+privsUsers.isInstructor = async function(uid){
+    return await isGroupMember(uid, 'instructor');
+}
+
+privsUsers.isStudent = async function(uid){
+    return await isGroupMember(uid, 'student');
+}
+
 privsUsers.isModerator = async function (uid, cid) {
     if (Array.isArray(cid)) {
         return await isModeratorOfCategories(cid, uid);
