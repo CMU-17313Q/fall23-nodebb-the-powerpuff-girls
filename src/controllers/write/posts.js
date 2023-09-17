@@ -83,6 +83,18 @@ Posts.unbookmark = async (req, res) => {
     helpers.formatApiResponse(200, res);
 };
 
+Posts.addtag = async (req, res) => {
+    const data = await mock(req);
+    await api.posts.addtag(req, data);
+    helpers.formatApiResponse(200, res);
+};
+
+Posts.untag = async (req, res) => {
+    const data = await mock(req);
+    await api.posts.untag(req, data);
+    helpers.formatApiResponse(200, res);
+};
+
 Posts.getDiffs = async (req, res) => {
     helpers.formatApiResponse(200, res, await api.posts.getDiffs(req, { ...req.params }));
 };

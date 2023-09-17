@@ -140,15 +140,12 @@ define("forum/topic/postTools", [
             onReplyClicked($(this), tid);
         });
 
-        postContainer.on("click", '[component="post/endorse"]', function () {
-            console.log("This is a debug message on cliking.");
-            onEndorseClicked($(this), tid);
-        });
-
         postContainer.on('click', '[component="post/tag"]', function () {
             console.log('hello');
-            const postEl = components.get('post', 'pid', tid);
-            // const postEl = components.get('post');
+            const pid = getData($(this), "data-pid");
+
+            const postEl = components.get('post', 'pid', pid);
+            console.log(pid, postEl);
             postEl.find('[component="post/content-tag"]').toggleClass('hidden');
 
             /* const tagBadge = postEl.find('[component="post/content-tag"]');
@@ -482,69 +479,11 @@ define("forum/topic/postTools", [
         });
     }
 
-    async function onEndorseClicked(button, tid) {
-        const selectedNode = await getSelectedNode();
-        console.log("This is a debug message.");
-        showStaleWarning(async function () {
-            const username = await getUserSlug(button);
-            const toPid = button.is('[component="post/endorse"]')
-                ? getData(button, "data-pid")
-                : null;
-
-            // Check if the user has instructor privileges
-            // const userHasInstructorPrivileges = checkUserPrivileges(); // Implement this function
-            const userHasInstructorPrivileges = true;
-
-            if (userHasInstructorPrivileges) {
-                bootbox.confirm(
-                    "Are you sure you want to endorse this answer?",
-                    function (confirm) {
-                        if (confirm) {
-                            // Instructor confirmed the endorsement, perform the endorsement logic here
-                            const endorsedMessage =
-                                "Instructor has endorsed this message";
-
-                            // Append the endorsed message below the body of the post/reply
-                            const post = button.parents("[data-pid]");
-                            if (post.length > 0) {
-                                const endorsedMessage =
-                                    "Instructor has endorsed this message";
-
-                                // Find the content element within the post
-                                const postContent = post.find(
-                                    '[component="post/content"]'
-                                );
-
-                                if (postContent.length > 0) {
-                                    postContent.append(
-                                        `<div class="endorsement">${endorsedMessage}</div>`
-                                    );
-
-                                    localStorage.setItem(
-                                        `endorsement_${toPid}`,
-                                        endorsedMessage
-                                    );
-                                }
-                            }
-                        }
-                    }
-                );
-
-                /* hooks.fire("action:composer.addQuote", {
-                    tid: tid,
-                    pid: toPid,
-                    username: username,
-                    topicName: ajaxify.data.titleRaw,
-                    text: selectedNode.text,
-                }); */
-            }
-        });
-    }
 
     // Inside a function that runs on page load
     function onPageLoad() {
         // Iterate through all posts on the page
-        $("[data-pid]").each(function () {
+        /*  $("[data-pid]").each(function () {
             const postId = $(this).attr("data-pid");
             const endorsement = localStorage.getItem(`endorsement_${postId}`);
             if (endorsement) {
@@ -553,12 +492,10 @@ define("forum/topic/postTools", [
                     `<div class="endorsement">${endorsement}</div>`
                 );
             }
-        });
+        }); */
+        console.log("in page load");
     }
 
-    $(function () {
-        onPageLoad();
-    });
 
     $(window).on("action:ajaxify.end", function () {
         onPageLoad();
@@ -602,6 +539,100 @@ define("forum/topic/postTools", [
             range.detach();
         }
         return { text: selectedText, pid: selectedPid, username: username };
+    }
+
+    function toggleIsTagged(button) {
+        const isEndorsed = getData(button, "data-is-endorsed");
+        const pid = button.is('[component="post/endorse"]')
+            ? getData(button, "data-pid")
+            : null;
+
+        // Define the allowed methods
+        const allowedMethods = ["put", "del"];
+
+        // Check if the method is allowed
+        const method =
+            button.attr("data-is-endorsed") === "false" ? "put" : "del";
+
+        if (!allowedMethods.includes(method)) {
+            console.error(`Invalid method: ${method}`);
+            return;
+        }
+
+        // Now you can call the method on the api object
+        api[method](`/posts/${pid}/endorse`, undefined, function (err) {
+            if (err) {
+                return alerts.error(err);
+            }
+            const type = method === "put" ? "endorse" : "unendorse";
+
+            const endorsedMessage = "Instructor has endorsed this message";
+            const unendorsedMessage = "Instructor has unendorsed this message";
+
+            const post = button.parents("[data-pid]");
+
+            // Find the content element within the post
+            const postContent = post.find('[component="post/content"]');
+
+            // Display or hide the endorsement message based on the action
+            if (method === "put") {
+                if (postContent.length > 0) {
+                    bootbox.confirm(
+                        "Are you sure you want to endorse this answer?",
+                        function (confirm) {
+                            post.find(
+                                '[component="post/is-endorsed"]'
+                            ).removeClass("hidden");
+                            // Update the button's text and data-is-endorsed attribute
+                            button.text(
+                                method === "put" ? "Unendorse" : "Endorse"
+                            );
+                            button.attr(
+                                "data-is-endorsed",
+                                method === "put" ? "true" : "false"
+                            );
+                            /* postContent.append(
+                                `<div class="endorsement">${endorsedMessage}</div>`
+                            ); */
+
+                            localStorage.setItem(
+                                `endorsementState-${pid}`,
+                                "true"
+                            );
+                        }
+                    );
+                }
+            } else {
+                bootbox.confirm(
+                    "Are you sure you want to unendorse this answer?",
+                    function (confirm) {
+                        post.find('[component="post/is-endorsed"]').addClass(
+                            "hidden"
+                        );
+                        // Update the button's text and data-is-endorsed attribute
+                        button.text(method === "put" ? "Unendorse" : "Endorse");
+                        button.attr(
+                            "data-is-endorsed",
+                            method === "put" ? "true" : "false"
+                        );
+                        /*  postContent.append(
+                            `<div class="endorsement">${unendorsedMessage}</div>`
+                        ); */
+
+                        localStorage.setItem(
+                            `endorsementState-${pid}`,
+                            "false"
+                        );
+                    }
+                );
+            }
+
+            hooks.fire(`action:post.${type}`, { pid: pid });
+        });
+
+        console.log(
+            `API Request Method: ${method}, URL: /posts/${pid}/endorse`
+        );
     }
 
     function bookmarkPost(button, pid) {

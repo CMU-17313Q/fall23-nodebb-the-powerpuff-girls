@@ -45,13 +45,17 @@
             <a class="permalink" href="{config.relative_path}/post/{posts.pid}"><span class="timeago" title="{posts.timestampISO}"></span></a>
         </span>
     </small>
+
+    <small class="pull-right">
+        <span  class = "<!-- IF posts.istagged -->hidden<!-- ENDIF posts.istagged -->" component="post/tag" style="background-color: grey; float: right;  margin-right: 2px; color: white; padding: 1px 2px; text-align: center; border-radius: 2px;"><i class="fa fa-plus-o"> </i>Add Tag</span>
+    </small>
 </div>
 
 <br />
 
 <div class="content" component="post/content" itemprop="text">
     {posts.content}
-    <span component="post/content-tag" class="tag-badge" style="background-color: orange; float: right;  color: white; padding: 4px 8px; text-align: center; border-radius: 2px;">Review Needed</span>
+    <span component="post/content-tag" class = "<!-- IF !posts.istagged -->hidden<!-- ENDIF !posts.istagged -->" style="background-color: orange; float: right;  color: white; padding: 4px 8px; text-align: center; border-radius: 2px;">Review Needed</span>
 </div>
 
 <div class="post-footer">
@@ -82,7 +86,6 @@
         <span class="post-tools">
             <a component="post/reply" href="#" class="no-select <!-- IF !privileges.topics:reply -->hidden<!-- ENDIF !privileges.topics:reply -->">[[topic:reply]]</a>
             <a component="post/quote" href="#" class="no-select <!-- IF !privileges.topics:reply -->hidden<!-- ENDIF !privileges.topics:reply -->">[[topic:quote]]</a>
-            <a component="post/endorse" href="#" class="no-select <!-- IF !privileges.topics:reply -->hidden<!-- ENDIF !privileges.topics:reply -->">[[topic:endorse]]</a>
 
         </span>
 

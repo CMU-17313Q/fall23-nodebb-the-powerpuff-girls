@@ -101,9 +101,7 @@
         </li>
     {{{end}}}
     <!-- adding tags here [Gulnaz] -->
-    <li>
-    <a component="post/tag" role="menuitem" tabindex="-1" tagged = "false" href="#"><i class="fa fa-message-pen"></i> Review needed</a>
-    </li>   
+
 <!-- ENDIF !posts.deleted -->
 
 {{{ if posts.display_flag_tools }}}

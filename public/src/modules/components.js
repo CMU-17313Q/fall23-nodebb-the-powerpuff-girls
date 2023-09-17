@@ -31,6 +31,12 @@ define('components', function () {
         'post/bookmark-count': function (pid) {
             return $('[component="post"][data-pid="' + pid + '"] [component="post/bookmark-count"]');
         },
+        'post/content-tag': function (pid) {
+            return $('[component="post"][data-pid="' + pid + '"] [component="post/content-tag"]');
+        },
+        'post/tag': function (pid) {
+            return $('[component="post"][data-pid="' + pid + '"] [component="post/tag"]');
+        },
 
         'user/postcount': function (uid) {
             return $('[component="user/postcount"][data-uid="' + uid + '"]');
