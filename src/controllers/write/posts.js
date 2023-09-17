@@ -152,8 +152,7 @@ Posts.endorse = async (req, res) => {
         // Add your logic to mark the post as endorsed using the 'posts' model
         await postActions.markAsEndorsed(req.params.pid);
 
-        // You can send a success response or any other desired response here
-        res.json({ success: true, message: "Post endorsed successfully" });
+        helpers.formatApiResponse(200, res);
     } catch (error) {
         // Handle errors appropriately
         console.error("Error endorsing post:", error);
@@ -173,8 +172,7 @@ Posts.unendorse = async (req, res) => {
         // Add your logic to mark the post as unendorsed using the 'posts' model
         await postActions.markAsUnendorsed(req.params.pid);
 
-        // You can send a success response or any other desired response here
-        res.json({ success: true, message: "Post unendorsed successfully" });
+        helpers.formatApiResponse(200, res);
     } catch (error) {
         // Handle errors appropriately
         console.error("Error unendorsing post:", error);
