@@ -24,6 +24,7 @@ privsPosts.get = async function (pids, uid) {
 
     const results = await utils.promiseParallel({
         isAdmin: user.isAdministrator(uid),
+        isInstructor: user.isInstructor(uid),
         isModerator: user.isModerator(uid, uniqueCids),
         isOwner: posts.isOwner(pids, uid),
         'topics:read': helpers.isAllowedTo('topics:read', uid, uniqueCids),
@@ -43,7 +44,7 @@ privsPosts.get = async function (pids, uid) {
 
     const privileges = cids.map((cid, i) => {
         const isAdminOrMod = results.isAdmin || isModerator[cid];
-        const editable = (privData['posts:edit'][cid] && (results.isOwner[i] || results.isModerator)) || results.isAdmin;
+        const editable = (privData['posts:edit'][cid] && (results.isOwner[i] || results.isModerator)) || results.isAdmin || results.isInstructor;
         const viewDeletedPosts = results.isOwner[i] || privData['posts:view_deleted'][cid] || results.isAdmin;
         const viewHistory = results.isOwner[i] || privData['posts:history'][cid] || results.isAdmin;
 
