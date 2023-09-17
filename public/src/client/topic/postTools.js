@@ -537,13 +537,6 @@ define("forum/topic/postTools", [
             }
             const type = method === "put" ? "endorse" : "unendorse";
 
-            // Update the button's text and data-is-endorsed attribute
-            button.text(method === "put" ? "Unendorse" : "Endorse");
-            button.attr(
-                "data-is-endorsed",
-                method === "put" ? "true" : "false"
-            );
-
             const endorsedMessage = "Instructor has endorsed this message";
             const unendorsedMessage = "Instructor has unendorsed this message";
 
@@ -558,10 +551,21 @@ define("forum/topic/postTools", [
                     bootbox.confirm(
                         "Are you sure you want to endorse this answer?",
                         function (confirm) {
-                            postContent.append(
-                                `<div class="endorsement">${endorsedMessage}</div>`
+                            post.find(
+                                '[component="post/is-endorsed"]'
+                            ).removeClass("hidden");
+                            // Update the button's text and data-is-endorsed attribute
+                            button.text(
+                                method === "put" ? "Unendorse" : "Endorse"
                             );
-                            // postContent.append(`endorsed `);
+                            button.attr(
+                                "data-is-endorsed",
+                                method === "put" ? "true" : "false"
+                            );
+                            /* postContent.append(
+                                `<div class="endorsement">${endorsedMessage}</div>`
+                            ); */
+
                             localStorage.setItem(
                                 `endorsementState-${pid}`,
                                 "true"
@@ -573,10 +577,19 @@ define("forum/topic/postTools", [
                 bootbox.confirm(
                     "Are you sure you want to unendorse this answer?",
                     function (confirm) {
-                        postContent.append(
-                            `<div class="endorsement">${unendorsedMessage}</div>`
+                        post.find('[component="post/is-endorsed"]').addClass(
+                            "hidden"
                         );
-                        // postContent.append(`endorsed `);
+                        // Update the button's text and data-is-endorsed attribute
+                        button.text(method === "put" ? "Unendorse" : "Endorse");
+                        button.attr(
+                            "data-is-endorsed",
+                            method === "put" ? "true" : "false"
+                        );
+                        /*  postContent.append(
+                            `<div class="endorsement">${unendorsedMessage}</div>`
+                        ); */
+
                         localStorage.setItem(
                             `endorsementState-${pid}`,
                             "false"
@@ -622,11 +635,14 @@ define("forum/topic/postTools", [
             console.log(postId);
             console.log(isEndorsed);
             const postContent = $(this).find('[component="post/content"]');
+            const eMessage = $(this).find('[component="post/is-endorsed"]');
             if (isEndorsed === "true") {
                 console.log(postId);
+                eMessage.removeClass("hidden");
                 postContent.append("endorsed ");
             } else {
                 // console.log(postId);
+                eMessage.addClass("hidden");
                 postContent.append("unendorsed ");
             }
         });
