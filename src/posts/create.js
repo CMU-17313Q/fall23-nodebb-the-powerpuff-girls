@@ -83,8 +83,8 @@ module.exports = function (Posts) {
           
             // Event handler for clicking the postVisibility element
             $("#postVisibility").on("click", function(event) {
-              displayGuidelinesModal();
-            });
+                displayGuidelinesModal();
+              });
           });          
 
         let result = await plugins.hooks.fire('filter:post.create', { post: postData, data: data });
