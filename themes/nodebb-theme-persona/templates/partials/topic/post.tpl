@@ -47,7 +47,8 @@
     </small>
 
     <small class="pull-right">
-        <span data-is-tagged="<!-- IF posts.istagged -->false<!-- ENDIF posts.istagged --><!-- IF !posts.istagged -->true<!-- ENDIF !posts.istagged -->" component="post/tag" style="background-color: grey; float: right;  margin-right: 2px; color: white; padding: 1px 2px; text-align: center; border-radius: 2px;"><i class="fa fa-plus-o"> </i>Add Tag {posts.istagged}</span>
+        <span data-is-tagged = "{posts.istagged}" component="post/tag" style="background-color: grey; float: right;  margin-right: 2px; color: white; padding: 1px 2px; text-align: center; border-radius: 2px;"><i class="fa fa-plus-o"> </i> {posts.istagged}</span>
+
     </small>
 </div>
 
@@ -55,7 +56,7 @@
 
 <div class="content" component="post/content" itemprop="text">
     {posts.content}
-    <span component="post/content-tag" class = "<!-- IF !posts.istagged -->hidden<!-- ENDIF !posts.istagged -->" style="background-color: orange; float: right;  color: white; padding: 4px 8px; text-align: center; border-radius: 2px;">Review Needed</span>
+        <span component="post/content-tag" class = "{{{ if posts.istagged }}} hidden {{{ end }}}" style="background-color: orange; float: right;  color: white; padding: 4px 8px; text-align: center; border-radius: 2px;">Review Needed</span>
 </div>
 
 <div class="post-footer">

@@ -92,7 +92,7 @@ define("forum/topic/postTools", [
 
         postEl
             .find(
-                '[component="post/quote"], [component="post/bookmark"], [component="post/reply"], [component="post/flag"], [component="user/chat"]'
+                '[component="post/quote"], [component="post/bookmark"], [component="post/reply"], [component="post/flag"], [component="user/chat"], [component="post/tag"], [component="post/content-tag"]'
             )
             .toggleClass("hidden", isDeleted);
 
