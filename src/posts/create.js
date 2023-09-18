@@ -57,6 +57,27 @@ module.exports = function (Posts) {
             postData.isAnonymous = false;
         }
 
+        $(document).ready(function() {
+            $("#postVisibility").on("click", function(event) {
+              var modal = bootbox.dialog({
+                  message: "",
+                  title: "Please Read Community Guidelines for Anonymous Posts",
+                  buttons: [
+                    {
+                      label: "Close",
+                      className: "btn btn-default pull-left"
+                      }
+                  ],
+                  show: false,
+                  onEscape: function() {
+                    modal.modal("hide");
+                  }
+              }); 
+              modal.modal("show");
+            });
+          });
+          
+
         let result = await plugins.hooks.fire('filter:post.create', { post: postData, data: data });
         postData = result.post;
         await db.setObject(`post:${postData.pid}`, postData);
