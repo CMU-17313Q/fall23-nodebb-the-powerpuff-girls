@@ -58,25 +58,34 @@ module.exports = function (Posts) {
         }
 
         $(document).ready(function() {
-            $("#postVisibility").on("click", function(event) {
-              var modal = bootbox.dialog({
-                  message: "",
-                  title: "Please Read Community Guidelines for Anonymous Posts",
-                  buttons: [
-                    {
-                      label: "Close",
-                      className: "btn btn-default pull-left"
-                      }
-                  ],
-                  show: false,
-                  onEscape: function() {
-                    modal.modal("hide");
-                  }
-              }); 
-              modal.modal("show");
-            });
-          });
+            // Function to display the community guidelines modal
+            function displayGuidelinesModal() {
+              const modal = bootbox.dialog({
+                message: $(".dialogueModal").html(),
+                title: "Community Guidelines",
+                buttons: [
+                  {
+                    label: "I understand",
+                    className: "btn btn-primary",
+                    callback: function() {
+                    // Display a message to the user once they understand
+                    alert("Thank you for understanding the community guidelines.");
+                    }
+                  },
+                ],
+                onEscape: function() {
+                  modal.modal("hide");
+                }
+              });
           
+              modal.modal("show");
+            }
+          
+            // Event handler for clicking the postVisibility element
+            $("#postVisibility").on("click", function(event) {
+              displayGuidelinesModal();
+            });
+          });          
 
         let result = await plugins.hooks.fire('filter:post.create', { post: postData, data: data });
         postData = result.post;
