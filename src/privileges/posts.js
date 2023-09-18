@@ -12,6 +12,7 @@ const plugins = require('../plugins');
 const utils = require('../utils');
 const privsCategories = require('./categories');
 const privsTopics = require('./topics');
+const { isInstructor } = require('./users');
 
 const privsPosts = module.exports;
 
@@ -50,10 +51,10 @@ privsPosts.get = async function (pids, uid) {
 
         return {
             editable: editable,
-            move: isAdminOrMod,
+            move: isAdminOrMod || isInstructor,
             isAdminOrMod: isAdminOrMod,
-            'topics:read': privData['topics:read'][cid] || results.isAdmin,
-            read: privData.read[cid] || results.isAdmin,
+            'topics:read': privData['topics:read'][cid] || results.isAdmin || results.isInstructor,
+            read: privData.read[cid] || results.isAdmin || results.isInstructor,
             'posts:history': viewHistory,
             'posts:view_deleted': viewDeletedPosts,
         };

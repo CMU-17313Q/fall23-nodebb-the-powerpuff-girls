@@ -24,11 +24,11 @@ async function isGroupMember(uid, groupName) {
 }
 
 privsUsers.isInstructor = async function(uid){
-    return await isGroupMember(uid, 'instructor');
+    return await isGroupMember(uid, 'instructors');
 }
 
 privsUsers.isStudent = async function(uid){
-    return await isGroupMember(uid, 'student');
+    return await isGroupMember(uid, 'students');
 }
 
 privsUsers.isModerator = async function (uid, cid) {

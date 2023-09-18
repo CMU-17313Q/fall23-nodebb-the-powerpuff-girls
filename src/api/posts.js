@@ -14,6 +14,7 @@ const privileges = require('../privileges');
 const apiHelpers = require('./helpers');
 const websockets = require('../socket.io');
 const socketHelpers = require('../socket.io/helpers');
+const { isInstructor } = require('../privileges/users');
 
 const postsAPI = module.exports;
 
@@ -314,7 +315,7 @@ postsAPI.getDiffs = async (caller, data) => {
         // Only admins, global mods and moderator of that cid can delete a diff
         deletable: isAdmin || isModerator,
         // These and post owners can restore to a different post version
-        editable: isAdmin || isModerator || parseInt(caller.uid, 10) === parseInt(post.uid, 10),
+        editable: isAdmin || isModerator || isInstructor || parseInt(caller.uid, 10) === parseInt(post.uid, 10),
     };
 };
 

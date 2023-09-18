@@ -11,6 +11,9 @@
         <!-- IMPORT partials/users_list_menu.tpl -->
         </div>
         <div class="col-xs-3 text-right">
+         <!-- IF isUserInstructor -->
+        <button type="button" data-type="edit" class="btn btn-info">Edit</button>
+        <!-- ENDIF isUserInstructor -->
             <!-- IF showInviteButton -->
             <button component="user/invite" class="btn btn-success"><i class="fa fa-users"></i> [[users:invite]]</button>
             <!-- ENDIF showInviteButton -->

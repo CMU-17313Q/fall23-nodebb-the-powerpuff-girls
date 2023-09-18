@@ -9,6 +9,7 @@ const groups = require('../groups');
 const helpers = require('./helpers');
 const plugins = require('../plugins');
 const utils = require('../utils');
+const { isInstructor } = require('./users');
 
 const privsCategories = module.exports;
 
@@ -93,7 +94,7 @@ privsCategories.get = async function (cid, uid) {
 
     const combined = userPrivileges.map(allowed => allowed || isAdministrator);
     const privData = _.zipObject(privs, combined);
-    const isAdminOrMod = isAdministrator || isModerator;
+    const isAdminOrMod = isAdministrator || isModerator || isInstructor;
 
     return await plugins.hooks.fire('filter:privileges.categories.get', {
         ...privData,
