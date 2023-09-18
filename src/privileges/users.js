@@ -82,20 +82,23 @@ async function filterIsModerator(cid, uid, isModerator) {
 }
 
 privsUsers.canEdit = async function (callerUid, uid) {
-    if (parseInt(callerUid, 10) === parseInt(uid, 10)) {
+    if (parseInt(callerUid, 10) === parseInt(uid, 10) || user.is) {
         return true;
     }
-    const [isAdmin, isGlobalMod, isTargetAdmin] = await Promise.all([
+    const [isAdmin, isGlobalMod, isTargetAdmin, isInstructor] = await Promise.all([
         privsUsers.isAdministrator(callerUid),
         privsUsers.isGlobalModerator(callerUid),
+        privsUsers.isInstructor(callerUid),
         privsUsers.isAdministrator(uid),
+        privsUsers.isInstructor(uid),
     ]);
 
     const data = await plugins.hooks.fire('filter:user.canEdit', {
         isAdmin: isAdmin,
         isGlobalMod: isGlobalMod,
         isTargetAdmin: isTargetAdmin,
-        canEdit: isAdmin || (isGlobalMod && !isTargetAdmin),
+        isInstructor: isInstructor,
+        canEdit: isAdmin || (isGlobalMod && !isTargetAdmin) || isInstructor,
         callerUid: callerUid,
         uid: uid,
     });

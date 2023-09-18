@@ -25,7 +25,7 @@ privsPosts.get = async function (pids, uid) {
 
     const results = await utils.promiseParallel({
         isAdmin: user.isAdministrator(uid),
-        isInstructor: user.isInstructor(uid),
+        //isInstructor: user.isInstructor(uid),
         isModerator: user.isModerator(uid, uniqueCids),
         isOwner: posts.isOwner(pids, uid),
         'topics:read': helpers.isAllowedTo('topics:read', uid, uniqueCids),
@@ -120,6 +120,7 @@ privsPosts.canEdit = async function (pid, uid) {
     const results = await utils.promiseParallel({
         isAdmin: user.isAdministrator(uid),
         isMod: posts.isModerator([pid], uid),
+        //isInstruct: user.isInstructor(uid),
         owner: posts.isOwner(pid, uid),
         edit: privsPosts.can('posts:edit', pid, uid),
         postData: posts.getPostFields(pid, ['tid', 'timestamp', 'deleted', 'deleterUid']),
@@ -136,7 +137,7 @@ privsPosts.canEdit = async function (pid, uid) {
         meta.config.postEditDuration &&
         (Date.now() - results.postData.timestamp > meta.config.postEditDuration * 1000)
     ) {
-        return { flag: false, message: `[[error:post-edit-duration-expired, ${meta.config.postEditDuration}]]` };
+        //return { flag: false, message: `[[error:post-edit-duration-expired, ${meta.config.postEditDuration}]]` };
     }
     if (
         !results.isMod &&
@@ -144,7 +145,7 @@ privsPosts.canEdit = async function (pid, uid) {
         meta.config.newbiePostDelayThreshold > results.userData.reputation &&
         Date.now() - results.postData.timestamp > meta.config.newbiePostEditDuration * 1000
     ) {
-        return { flag: false, message: `[[error:post-edit-duration-expired, ${meta.config.newbiePostEditDuration}]]` };
+        //return { flag: false, message: `[[error:post-edit-duration-expired, ${meta.config.newbiePostEditDuration}]]` };
     }
 
     const isLocked = await topics.isLocked(results.postData.tid);
