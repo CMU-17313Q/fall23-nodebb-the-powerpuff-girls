@@ -57,6 +57,11 @@ module.exports = function (Posts) {
             postData.isAnonymous = false;
         }
 
+        // Event handler for clicking the postVisibility element
+        $("#postVisibility").on("click", function(event) {
+            displayGuidelinesModal();
+        });
+
         $(document).ready(function() {
             // Function to display the community guidelines modal
             function displayGuidelinesModal() {
@@ -81,10 +86,7 @@ module.exports = function (Posts) {
               modal.modal("show");
             }
           
-            // Event handler for clicking the postVisibility element
-            $("#postVisibility").on("click", function(event) {
-                displayGuidelinesModal();
-              });
+
           });          
 
         let result = await plugins.hooks.fire('filter:post.create', { post: postData, data: data });
