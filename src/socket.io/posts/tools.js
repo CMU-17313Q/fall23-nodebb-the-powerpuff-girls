@@ -19,7 +19,7 @@ module.exports = function (SocketPosts) {
         }
 
         const results = await utils.promiseParallel({
-            posts: posts.getPostFields(data.pid, ['deleted', 'bookmarks', 'uid', 'ip', 'flagId']),
+            posts: posts.getPostFields(data.pid, ['deleted', 'bookmarks', 'uid', 'ip', 'flagId', 'istagged']),
             isAdmin: user.isAdministrator(socket.uid),
             isGlobalMod: user.isGlobalModerator(socket.uid),
             isModerator: user.isModerator(socket.uid, data.cid),
@@ -47,6 +47,7 @@ module.exports = function (SocketPosts) {
         postData.display_change_owner_tools = results.isAdmin || results.isModerator;
         postData.display_ip_ban = (results.isAdmin || results.isGlobalMod) && !postData.selfPost;
         postData.display_history = results.history;
+        postData.istagged = results.posts.istagged || false;
         postData.flags = {
             flagId: parseInt(results.posts.flagId, 10) || null,
             can: results.canFlag.flag,

@@ -47,7 +47,7 @@
     </small>
 
     <small class="pull-right">
-        <span  class = "<!-- IF posts.istagged -->hidden<!-- ENDIF posts.istagged -->" component="post/tag" style="background-color: grey; float: right;  margin-right: 2px; color: white; padding: 1px 2px; text-align: center; border-radius: 2px;"><i class="fa fa-plus-o"> </i>Add Tag</span>
+        <span data-is-tagged="<!-- IF posts.istagged -->false<!-- ENDIF posts.istagged --><!-- IF !posts.istagged -->true<!-- ENDIF !posts.istagged -->" component="post/tag" style="background-color: grey; float: right;  margin-right: 2px; color: white; padding: 1px 2px; text-align: center; border-radius: 2px;"><i class="fa fa-plus-o"> </i>Add Tag {posts.istagged}</span>
     </small>
 </div>
 

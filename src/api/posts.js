@@ -274,11 +274,11 @@ postsAPI.unbookmark = async function (caller, data) {
 };
 
 postsAPI.addtag = async function (caller, data) {
-    return await apiHelpers.postCommand(caller, 'addtag', 'istagged', '', data);
+    return await apiHelpers.postCommand(caller, 'addtag', 'addtag', '', data);
 };
 
 postsAPI.untag = async function (caller, data) {
-    return await apiHelpers.postCommand(caller, 'untag', 'istagged', '', data);
+    return await apiHelpers.postCommand(caller, 'untag', 'addtag', '', data);
 };
 
 async function diffsPrivilegeCheck(pid, uid) {

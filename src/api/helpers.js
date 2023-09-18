@@ -117,6 +117,8 @@ exports.postCommand = async function (caller, command, eventName, notification, 
         filter:post.unvote
         filter:post.bookmark
         filter:post.unbookmark
+        filter:post.addtag
+        filter:post.untag
      */
     const filteredData = await plugins.hooks.fire(`filter:post.${command}`, {
         data: data,
@@ -126,6 +128,7 @@ exports.postCommand = async function (caller, command, eventName, notification, 
 };
 
 async function executeCommand(caller, command, eventName, notification, data) {
+    console.log(command);
     const result = await posts[command](data.pid, caller.uid);
     if (result && eventName) {
         websockets.in(`uid_${caller.uid}`).emit(`posts.${command}`, result);

@@ -16,6 +16,8 @@ module.exports = function (Posts) {
         // This is an internal method, consider using Topics.reply instead
         const { uid } = data;
         const { tid } = data;
+        // bool new property
+        const { istagged } = data;
         const content = data.content.toString();
         const timestamp = data.timestamp || Date.now();
         const isMain = data.isMain || false;
@@ -35,7 +37,7 @@ module.exports = function (Posts) {
             tid: tid,
             content: content,
             timestamp: timestamp,
-            istagged: false,
+            istagged: istagged,
         };
 
         if (data.toPid) {

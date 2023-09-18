@@ -138,6 +138,7 @@ module.exports = function (Topics) {
                 postObj.downvoted = voteData.downvotes[i];
                 postObj.votes = postObj.votes || 0;
                 postObj.replies = replies[i];
+                postObj.istagged = postObj.istagged || false;
                 postObj.selfPost = parseInt(uid, 10) > 0 && parseInt(uid, 10) === postObj.uid;
 
                 // Username override for guests, if enabled

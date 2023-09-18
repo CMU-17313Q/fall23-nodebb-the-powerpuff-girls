@@ -80,6 +80,7 @@ type QueueResult = {
 type PostFnType = (data: ComposerData) => Promise<QueueResult>;
 
 export async function post(req: Request<object, object, ComposerData> & { uid: number }, res: Response): Promise<void> {
+    console.log('creating a post ', req);
     const { body } = req;
     const data: ComposerData = {
         uid: req.uid,

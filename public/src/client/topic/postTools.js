@@ -141,13 +141,7 @@ define("forum/topic/postTools", [
         });
 
         postContainer.on('click', '[component="post/tag"]', function () {
-            console.log('hello');
-            const pid = getData($(this), "data-pid");
-
-            const postEl = components.get('post', 'pid', pid);
-            console.log(pid, postEl);
-            postEl.find('[component="post/content-tag"]').toggleClass('hidden');
-
+            toggleIsTagged($(this));
             /* const tagBadge = postEl.find('[component="post/content-tag"]');
             if (tagBadge.classList.contains('hidden')) {
                 tagBadge.classList.remove('hidden');
@@ -542,17 +536,20 @@ define("forum/topic/postTools", [
     }
 
     function toggleIsTagged(button) {
-        const isEndorsed = getData(button, "data-is-endorsed");
-        const pid = button.is('[component="post/endorse"]')
-            ? getData(button, "data-pid")
-            : null;
+        const pid = getData(button, "data-pid");
+
+        const postEl = components.get('post', 'pid', pid);
+        console.log(pid, postEl);
+        // postEl.find('[component="post/content-tag"]').toggleClass('hidden');
+
+        // const isEndorsed = getData(button, "data-is-endorsed");
 
         // Define the allowed methods
         const allowedMethods = ["put", "del"];
 
         // Check if the method is allowed
         const method =
-            button.attr("data-is-endorsed") === "false" ? "put" : "del";
+            button.attr("data-is-tagged") === "false" ? "put" : "del";
 
         if (!allowedMethods.includes(method)) {
             console.error(`Invalid method: ${method}`);
@@ -560,15 +557,12 @@ define("forum/topic/postTools", [
         }
 
         // Now you can call the method on the api object
-        api[method](`/posts/${pid}/endorse`, undefined, function (err) {
+        api[method](`/posts/${pid}/addtag`, undefined, function (err) {
             if (err) {
                 return alerts.error(err);
             }
-            const type = method === "put" ? "endorse" : "unendorse";
-
-            const endorsedMessage = "Instructor has endorsed this message";
-            const unendorsedMessage = "Instructor has unendorsed this message";
-
+            const type = method === "put" ? "addtag" : "untag";
+            console.log(method);
             const post = button.parents("[data-pid]");
 
             // Find the content element within the post
@@ -578,60 +572,48 @@ define("forum/topic/postTools", [
             if (method === "put") {
                 if (postContent.length > 0) {
                     bootbox.confirm(
-                        "Are you sure you want to endorse this answer?",
+                        "Are you sure you want to add needs review to this answer?",
                         function (confirm) {
                             post.find(
-                                '[component="post/is-endorsed"]'
+                                '[component="post/content-tag"]'
                             ).removeClass("hidden");
                             // Update the button's text and data-is-endorsed attribute
-                            button.text(
-                                method === "put" ? "Unendorse" : "Endorse"
-                            );
+                            button.text(method === "put" ? "Remove Tag" : "Add Tag");
                             button.attr(
-                                "data-is-endorsed",
+                                "data-is-tagged",
                                 method === "put" ? "true" : "false"
                             );
                             /* postContent.append(
                                 `<div class="endorsement">${endorsedMessage}</div>`
                             ); */
-
-                            localStorage.setItem(
-                                `endorsementState-${pid}`,
-                                "true"
-                            );
                         }
                     );
                 }
             } else {
                 bootbox.confirm(
-                    "Are you sure you want to unendorse this answer?",
+                    "Are you sure you want to untag this answer?",
                     function (confirm) {
-                        post.find('[component="post/is-endorsed"]').addClass(
+                        post.find('[component="post/content-tag"]').addClass(
                             "hidden"
                         );
                         // Update the button's text and data-is-endorsed attribute
-                        button.text(method === "put" ? "Unendorse" : "Endorse");
+                        button.text(method === "put" ? "Remove Tag" : "Add Tag");
                         button.attr(
-                            "data-is-endorsed",
+                            "data-is-tagged",
                             method === "put" ? "true" : "false"
                         );
                         /*  postContent.append(
                             `<div class="endorsement">${unendorsedMessage}</div>`
                         ); */
-
-                        localStorage.setItem(
-                            `endorsementState-${pid}`,
-                            "false"
-                        );
                     }
                 );
             }
 
-            hooks.fire(`action:post.${type}`, { pid: pid });
+            // hooks.fire(`action:post.${type}`, { pid: pid });
         });
 
         console.log(
-            `API Request Method: ${method}, URL: /posts/${pid}/endorse`
+            `API Request Method: ${method}, URL: /posts/${pid}/addtag`
         );
     }
 

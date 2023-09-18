@@ -50,6 +50,7 @@ function get(req, res, callback) {
 exports.get = get;
 function post(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
+        console.log('creating a post ', req);
         const { body } = req;
         const data = {
             uid: req.uid,
