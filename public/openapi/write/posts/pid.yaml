@@ -41,7 +41,7 @@ get:
                   deleted:
                     type: number
                   isEndorsed:
-                    type: string
+                    type: number
                   upvotes:
                     type: number
                   downvotes:
