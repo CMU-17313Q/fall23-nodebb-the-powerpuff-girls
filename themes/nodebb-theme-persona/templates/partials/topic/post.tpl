@@ -51,6 +51,7 @@
 
 <div class="content" component="post/content" itemprop="text">
     {posts.content}
+    <div component="post/is-endorsed" style="text-align: center; color: green; font-weight: bold;" class="<!-- IF posts.isEndorsed -->hidden<!-- ENDIF posts.isEndorsed -->">Instructor has endorsed the answer</div>
 </div>
 
 <div class="post-footer">
@@ -81,7 +82,7 @@
         <span class="post-tools">
             <a component="post/reply" href="#" class="no-select <!-- IF !privileges.topics:reply -->hidden<!-- ENDIF !privileges.topics:reply -->">[[topic:reply]]</a>
             <a component="post/quote" href="#" class="no-select <!-- IF !privileges.topics:reply -->hidden<!-- ENDIF !privileges.topics:reply -->">[[topic:quote]]</a>
-            <a component="post/endorse" href="#" class="no-select <!-- IF !privileges.topics:reply -->hidden<!-- ENDIF !privileges.topics:reply -->">[[topic:endorse]]</a>
+            <a component="post/endorse" href="#" class="no-select <!-- IF !privileges.topics:reply -->hidden<!-- ENDIF !privileges.topics:reply -->" data-is-endorsed="{posts.isEndorsed}"> [[topic:endorse]]</a>
         </span>
 
         <!-- IF !reputation:disabled -->
