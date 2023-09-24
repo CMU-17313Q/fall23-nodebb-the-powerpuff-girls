@@ -150,7 +150,7 @@ Posts.endorse = async (req, res) => {
 
     try {
         // Add your logic to mark the post as endorsed using the 'posts' model
-        await postActions.markAsEndorsed(req.params.pid);
+        await postActions.markAsEndorsed(req.params.pid, req.uid);
 
         helpers.formatApiResponse(200, res);
     } catch (error) {
@@ -170,7 +170,7 @@ Posts.unendorse = async (req, res) => {
 
     try {
         // Add your logic to mark the post as unendorsed using the 'posts' model
-        await postActions.markAsUnendorsed(req.params.pid);
+        await postActions.markAsUnendorsed(req.params.pid, req.uid);
 
         helpers.formatApiResponse(200, res);
     } catch (error) {
