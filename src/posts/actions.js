@@ -5,32 +5,53 @@
 const db = require("../database");
 const user = require("../user");
 
-const postActions = {};
+module.exports = function (Posts) {
+    Posts.endorse = async function (pid, uid) {
+        // Check the user's account type
+        const instructorCondition = await user.isInstructor(uid);
 
-postActions.markAsEndorsed = async (pid, uid) => {
-    // Check the user's account type
-    const instructorCondition = await user.isInstructor(uid);
+        if (instructorCondition) {
+            // Check if the post is already endorsed
+            const hasEndorsed = await Posts.hasEndorsed(pid, uid);
 
-    if (instructorCondition) {
-        console.log(pid);
-        await db.setObjectField(`post:${pid}`, "isEndorsed", true);
-        console.log("set to true");
-    } else {
-        throw new Error("User is not an instructor. Cannot endorse.");
-    }
+            if (hasEndorsed) {
+                throw new Error("[[error:already-endorsed]]");
+            }
+
+            console.log(pid);
+            await db.setObjectField(`post:${pid}`, "isEndorsed", true);
+            console.log("set to true");
+        } else {
+            throw new Error("User is not an instructor. Cannot endorse.");
+        }
+    };
+
+    Posts.unendorse = async function (pid, uid) {
+        // Check the user's account type
+        const instructorCondition = await user.isInstructor(uid);
+
+        if (instructorCondition) {
+            // Check if the post is already unendorsed
+            const hasEndorsed = await Posts.hasEndorsed(pid, uid);
+
+            if (!hasEndorsed) {
+                throw new Error("[[error:already-unendorsed]]");
+            }
+
+            console.log(pid);
+            await db.setObjectField(`post:${pid}`, "isEndorsed", false);
+            console.log("set to false");
+        } else {
+            throw new Error("User is not an instructor. Cannot endorse.");
+        }
+    };
+
+    Posts.hasEndorsed = async function (pid, uid) {
+        if (parseInt(uid, 10) <= 0) {
+            return false;
+        }
+
+        const isEndorsed = await db.getObjectField(`post:${pid}`, "isEndorsed");
+        return isEndorsed === "true";
+    };
 };
-
-postActions.markAsUnendorsed = async (pid, uid) => {
-    // Check the user's account type
-    const instructorCondition = await user.isInstructor(uid);
-
-    if (instructorCondition) {
-        console.log(pid);
-        await db.setObjectField(`post:${pid}`, "isEndorsed", false);
-        console.log("set to false");
-    } else {
-        throw new Error("User is not an instructor. Cannot endorse.");
-    }
-};
-
-module.exports = postActions;

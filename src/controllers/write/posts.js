@@ -8,7 +8,7 @@ const privileges = require("../../privileges");
 const api = require("../../api");
 const helpers = require("../helpers");
 const apiHelpers = require("../../api/helpers");
-const postActions = require("../../posts/actions");
+// const postActions = require("../../posts/actions");
 
 const Posts = module.exports;
 
@@ -150,16 +150,20 @@ Posts.endorse = async (req, res) => {
 
     try {
         // Add your logic to mark the post as endorsed using the 'posts' model
-        await postActions.markAsEndorsed(req.params.pid, req.uid);
+
+        // await Posts.markAsEndorsed(req.params.pid, req.uid);
+        const data = await mock(req);
+        await api.posts.endorse(req, data);
 
         helpers.formatApiResponse(200, res);
     } catch (error) {
         // Handle errors appropriately
         console.error("Error endorsing post:", error);
-        res.status(500).json({
+        /* res.status(500).json({
             success: false,
             message: "Failed to endorse post",
-        });
+        }); */
+        helpers.formatApiResponse(500, res);
     }
 };
 
@@ -170,15 +174,19 @@ Posts.unendorse = async (req, res) => {
 
     try {
         // Add your logic to mark the post as unendorsed using the 'posts' model
-        await postActions.markAsUnendorsed(req.params.pid, req.uid);
+
+        const data = await mock(req);
+        await api.posts.unendorse(req, data);
+        // await Posts.markAsUnendorsed(req.params.pid, req.uid);
 
         helpers.formatApiResponse(200, res);
     } catch (error) {
         // Handle errors appropriately
         console.error("Error unendorsing post:", error);
-        res.status(500).json({
+        /* res.status(500).json({
             success: false,
             message: "Failed to unendorse post",
-        });
+        }); */
+        helpers.formatApiResponse(500, res);
     }
 };
