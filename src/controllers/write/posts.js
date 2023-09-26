@@ -163,7 +163,7 @@ Posts.endorse = async (req, res) => {
             success: false,
             message: "Failed to endorse post",
         }); */
-        helpers.formatApiResponse(500, res);
+        helpers.formatApiResponse(403, res);
     }
 };
 
@@ -187,6 +187,6 @@ Posts.unendorse = async (req, res) => {
             success: false,
             message: "Failed to unendorse post",
         }); */
-        helpers.formatApiResponse(500, res);
+        helpers.formatApiResponse(403, res);
     }
 };

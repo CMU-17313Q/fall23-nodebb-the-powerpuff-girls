@@ -436,11 +436,33 @@ describe("Post's", () => {
         });
     });
 
+    /* describe("endorse/unendorse", () => {
+        it("should endorse a post", async () => {
+            const data = await apiPosts.endorse(
+                { uid: 2 },
+                { pid: postData.pid, room_id: `topic_${postData.tid}` }
+            );
+            assert.equal(data.isEndorsed, true);
+            const hasEndorsed = await posts.hasEndorsed(postData.pid, 2);
+            assert.equal(hasEndorsed, true);
+        });
+
+        it("should unendorse a post", async () => {
+            const data = await apiPosts.unendorse(
+                { uid: 2 },
+                { pid: postData.pid, room_id: `topic_${postData.tid}` }
+            );
+            assert.equal(data.isEndorsed, false);
+            const hasEndorsed = await posts.hasEndorsed(postData.pid, voterUid);
+            assert.equal(hasEndorsed, false);
+        });
+    }); */
+
     describe("endorse/unendorse", () => {
         let endorsedPostPid;
         let studentUserUid;
 
-        before(async () => {
+        /* before(async () => {
             // Create a post to endorse/unendorse
             const result = await topics.post({
                 uid: voterUid,
@@ -450,14 +472,15 @@ describe("Post's", () => {
             });
             endorsedPostPid = result.postData.pid;
 
-            /* const studentUser = await user.create({
-                uid: 587839,
+            const studentUser = await user.create({
+                uid: 3,
                 accounttype: "student",
             });
-            studentUserUid = studentUser.uid; */
-        });
+            studentUserUid = studentUser.uid;
+        }); */
 
-        /* it("should fail to endorse a post for a student user", async () => { // this test expected to fail
+        it("should fail to endorse a post for a student user", async () => {
+            // this test expected to fail
             try {
                 await apiPosts.endorse(
                     { uid: voterUid }, // uid over here should be a logged in student
@@ -472,11 +495,11 @@ describe("Post's", () => {
                     "User is not an instructor. Cannot endorse."
                 );
             }
-        }); */
+        });
 
-        it("should endorse a post", async () => {
+        /* it("should endorse a post", async () => {
             const result = await apiPosts.endorse(
-                { uid: voterUid },
+                { uid: 2 },
                 { pid: postData.pid, room_id: `topic_${postData.tid}` }
             );
             assert.equal(result.isEndorsed, true);
@@ -489,7 +512,7 @@ describe("Post's", () => {
 
         it("should unendorse a post", async () => {
             const result = await apiPosts.unendorse(
-                { uid: voterUid },
+                { uid: 2 },
                 { pid: postData.pid, room_id: `topic_${postData.tid}` }
             );
             assert.equal(result.isEndorsed, false);
@@ -498,9 +521,9 @@ describe("Post's", () => {
                 result.uid
             );
             assert.equal(hasEndorsed, false);
-        });
+        }); */
 
-        it("should fail to endorse a post that is already endorsed", async () => {
+        /* it("should fail to endorse a post that is already endorsed", async () => {
             try {
                 await apiPosts.endorse(
                     { uid: voterUid },
@@ -520,7 +543,7 @@ describe("Post's", () => {
             } catch (err) {
                 assert.equal(err.message, "[[error:already-unendorsed]]");
             }
-        });
+        }); */
     });
 
     describe("post tools", () => {

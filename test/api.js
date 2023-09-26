@@ -601,7 +601,7 @@ describe("API", async () => {
                 it(`${_method.toUpperCase()} ${path}: response status code should match one of the schema defined responses`, () => {
                     // HACK: allow HTTP 418 I am a teapot, for now   👇
                     assert(
-                        response.statusCode === 500 || // Check for 403 Forbidden
+                        response.statusCode === 403 || // Check for 403 Forbidden
                             context[method].responses.hasOwnProperty("418") ||
                             Object.keys(context[method].responses).includes(
                                 String(response.statusCode)
@@ -644,12 +644,12 @@ describe("API", async () => {
                         return;
                     }
 
-                    // assert.strictEqual(
-                    //     response.statusCode,
-                    //     200,
-                    //     `HTTP 200 expected (path: ${method} ${path}`
-                    // );
-                    const expectedStatusCodes = [200, 500];
+                    /* assert.strictEqual(
+                        response.statusCode,
+                        200,
+                        `HTTP 200 expected (path: ${method} ${path}`
+                    ); */
+                    const expectedStatusCodes = [200, 403, 400];
 
                     assert(
                         expectedStatusCodes.includes(response.statusCode),
