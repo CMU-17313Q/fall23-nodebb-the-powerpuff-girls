@@ -32,6 +32,7 @@ describe("Post's", () => {
     let voterUid;
     let voteeUid;
     let globalModUid;
+    let endorserUid;
     let postData;
     let topicData;
     let cid;
@@ -48,6 +49,15 @@ describe("Post's", () => {
                 globalModUid: function (next) {
                     user.create(
                         { username: "globalmod", password: "globalmodpwd" },
+                        next
+                    );
+                },
+                endorserUid: function (next) {
+                    user.create(
+                        {
+                            username: "endorser",
+                            accounttype: "instructor",
+                        },
                         next
                     );
                 },
@@ -69,6 +79,7 @@ describe("Post's", () => {
 
                 voterUid = results.voterUid;
                 voteeUid = results.voteeUid;
+                endorserUid = results.endorserUid;
                 globalModUid = results.globalModUid;
                 cid = results.category.cid;
 
@@ -480,6 +491,7 @@ describe("Post's", () => {
         }); */
 
         it("should fail to endorse a post for a student user", async () => {
+            // this test passes
             // this test expected to fail
             try {
                 await apiPosts.endorse(
@@ -497,31 +509,34 @@ describe("Post's", () => {
             }
         });
 
-        /* it("should endorse a post", async () => {
+        it("should endorse a post", async () => {
             const result = await apiPosts.endorse(
-                { uid: 2 },
+                { uid: endorserUid }, // Use the "endorser" user
                 { pid: postData.pid, room_id: `topic_${postData.tid}` }
             );
+            console.log(result);
             assert.equal(result.isEndorsed, true);
+            // Now you can check if the "endorser" has endorsed the post
             const hasEndorsed = await posts.hasEndorsed(
-                endorsedPostPid,
-                result.uid
+                postData.pid,
+                endorserUid
             );
             assert.equal(hasEndorsed, true);
         });
 
         it("should unendorse a post", async () => {
             const result = await apiPosts.unendorse(
-                { uid: 2 },
+                { uid: endorserUid }, // Use the "endorser" user
                 { pid: postData.pid, room_id: `topic_${postData.tid}` }
             );
             assert.equal(result.isEndorsed, false);
+            // Now you can check if the "endorser" has unendorsed the post
             const hasEndorsed = await posts.hasEndorsed(
-                endorsedPostPid,
-                result.uid
+                postData.pid,
+                endorserUid
             );
             assert.equal(hasEndorsed, false);
-        }); */
+        });
 
         /* it("should fail to endorse a post that is already endorsed", async () => {
             try {

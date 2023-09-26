@@ -21,9 +21,12 @@ module.exports = function (Posts) {
             console.log(pid);
             await db.setObjectField(`post:${pid}`, "isEndorsed", true);
             console.log("set to true");
-        } else {
-            throw new Error("User is not an instructor. Cannot endorse.");
+            return {
+                postId: { pid }, // Adjust the structure to match your needs
+                isEndorsed: true, // Set this value accordingly
+            };
         }
+        throw new Error("User is not an instructor. Cannot endorse.");
     };
 
     Posts.unendorse = async function (pid, uid) {
@@ -41,9 +44,13 @@ module.exports = function (Posts) {
             console.log(pid);
             await db.setObjectField(`post:${pid}`, "isEndorsed", false);
             console.log("set to false");
-        } else {
-            throw new Error("User is not an instructor. Cannot endorse.");
+
+            return {
+                postId: { pid }, // Adjust the structure to match your needs
+                isEndorsed: false, // Set this value accordingly
+            };
         }
+        throw new Error("User is not an instructor. Cannot endorse.");
     };
 
     Posts.hasEndorsed = async function (pid, uid) {
