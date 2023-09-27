@@ -14,9 +14,7 @@ module.exports = function (Posts) {
             // Check if the post is already endorsed
             const hasEndorsed = await Posts.hasEndorsed(pid, uid);
 
-            if (hasEndorsed) {
-                throw new Error("[[error:already-endorsed]]");
-            }
+            console.log(hasEndorsed);
 
             console.log(pid);
             await db.setObjectField(`post:${pid}`, "isEndorsed", true);
@@ -37,9 +35,7 @@ module.exports = function (Posts) {
             // Check if the post is already unendorsed
             const hasEndorsed = await Posts.hasEndorsed(pid, uid);
 
-            if (!hasEndorsed) {
-                throw new Error("[[error:already-unendorsed]]");
-            }
+            console.log(hasEndorsed);
 
             console.log(pid);
             await db.setObjectField(`post:${pid}`, "isEndorsed", false);

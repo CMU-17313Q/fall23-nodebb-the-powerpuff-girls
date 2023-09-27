@@ -447,48 +447,9 @@ describe("Post's", () => {
         });
     });
 
-    /* describe("endorse/unendorse", () => {
-        it("should endorse a post", async () => {
-            const data = await apiPosts.endorse(
-                { uid: 2 },
-                { pid: postData.pid, room_id: `topic_${postData.tid}` }
-            );
-            assert.equal(data.isEndorsed, true);
-            const hasEndorsed = await posts.hasEndorsed(postData.pid, 2);
-            assert.equal(hasEndorsed, true);
-        });
-
-        it("should unendorse a post", async () => {
-            const data = await apiPosts.unendorse(
-                { uid: 2 },
-                { pid: postData.pid, room_id: `topic_${postData.tid}` }
-            );
-            assert.equal(data.isEndorsed, false);
-            const hasEndorsed = await posts.hasEndorsed(postData.pid, voterUid);
-            assert.equal(hasEndorsed, false);
-        });
-    }); */
-
     describe("endorse/unendorse", () => {
         let endorsedPostPid;
         let studentUserUid;
-
-        /* before(async () => {
-            // Create a post to endorse/unendorse
-            const result = await topics.post({
-                uid: voterUid,
-                cid: cid,
-                title: "Endorse Test",
-                content: "This is a test post for endorsement.",
-            });
-            endorsedPostPid = result.postData.pid;
-
-            const studentUser = await user.create({
-                uid: 3,
-                accounttype: "student",
-            });
-            studentUserUid = studentUser.uid;
-        }); */
 
         it("should fail to endorse a post for a student user", async () => {
             // this test passes
@@ -537,28 +498,6 @@ describe("Post's", () => {
             );
             assert.equal(hasEndorsed, false);
         });
-
-        /* it("should fail to endorse a post that is already endorsed", async () => {
-            try {
-                await apiPosts.endorse(
-                    { uid: voterUid },
-                    { pid: postData.pid, room_id: `topic_${postData.tid}` }
-                );
-            } catch (err) {
-                assert.equal(err.message, "[[error:already-endorsed]]");
-            }
-        });
-
-        it("should fail to unendorse a post that is not endorsed", async () => {
-            try {
-                await apiPosts.unendorse(
-                    { uid: globalModUid },
-                    { pid: endorsedPostPid }
-                );
-            } catch (err) {
-                assert.equal(err.message, "[[error:already-unendorsed]]");
-            }
-        }); */
     });
 
     describe("post tools", () => {
