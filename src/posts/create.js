@@ -19,6 +19,8 @@ module.exports = function (Posts) {
         const content = data.content.toString();
         const timestamp = data.timestamp || Date.now();
         const isMain = data.isMain || false;
+        const { postType } = data;
+
 
         if (!uid && parseInt(uid, 10) !== 0) {
             throw new Error('[[error:invalid-uid]]');
@@ -35,6 +37,7 @@ module.exports = function (Posts) {
             tid: tid,
             content: content,
             timestamp: timestamp,
+            postType: postType,
         };
 
         if (data.toPid) {
@@ -49,13 +52,6 @@ module.exports = function (Posts) {
 
         // Adding and checking if Anonymous feature is enabled
         // making anonymous users' uid -4
-        if (data.postVisibility === "anonymous"){
-            postData.uid = -4;
-            postData.handle = "Anonymous"
-            postData.isAnonymous = true;
-        } else {
-            postData.isAnonymous = false;
-        }
 
         let result = await plugins.hooks.fire('filter:post.create', { post: postData, data: data });
         postData = result.post;

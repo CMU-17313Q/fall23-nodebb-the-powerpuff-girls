@@ -213,7 +213,12 @@ Topics.getTopicWithPosts = async function (topicData, set, uid, start, stop, rev
     topicData.unreplied = topicData.postcount === 1;
     topicData.icons = [];
 
+
     const result = await plugins.hooks.fire('filter:topic.get', { topic: topicData, uid: uid });
+    // hide the user identity
+    if (topicData.postType === 'anon') {
+        topicData.uid = 0;
+    }
     return result.topic;
 };
 
