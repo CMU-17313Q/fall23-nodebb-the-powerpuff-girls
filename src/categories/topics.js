@@ -160,6 +160,15 @@ module.exports = function (Categories) {
         }
 
         topics.forEach((topic) => {
+            // set user credentials to Anonymous
+            if (topic.postType === 'anon') {
+                topic.uid = 0;
+                topic.user = {
+                    username: 'Anonymous',
+                    anon: true,
+                    displayname: 'Anonymous',
+                };
+            }
             if (!topic.scheduled && topic.deleted && !topic.isOwner) {
                 topic.title = '[[topic:topic_is_deleted]]';
                 if (topic.hasOwnProperty('titleRaw')) {
