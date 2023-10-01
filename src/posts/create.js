@@ -61,37 +61,7 @@ module.exports = function (Posts) {
             postData.isAnonymous = true;
         } else {
             postData.isAnonymous = false;
-        }
-
-        $(document).ready(function() {
-            // Function to display the community guidelines modal
-            function displayGuidelinesModal() {
-              const modal = bootbox.dialog({
-                message: $(".dialogueModal").html(),
-                title: "Community Guidelines",
-                buttons: [
-                  {
-                    label: "I understand",
-                    className: "btn btn-primary",
-                    callback: function() {
-                    // Display a message to the user once they understand
-                    alert("Thank you for understanding the community guidelines.");
-                    }
-                  },
-                ],
-                onEscape: function() {
-                  modal.modal("hide");
-                }
-              });
-          
-              modal.modal("show");
-            }
-          
-            // Event handler for clicking the postVisibility element
-            $("#postVisibility").on("click", function(event) {
-              displayGuidelinesModal();
-            });
-          });          
+        }          
 
         let result = await plugins.hooks.fire('filter:post.create', { post: postData, data: data });
         postData = result.post;

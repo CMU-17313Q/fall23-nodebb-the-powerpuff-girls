@@ -61,6 +61,7 @@ define('forum/topic', [
         addParentHandler();
         addDropupHandler();
         addRepliesHandler();
+        displayGuidelinesModal()
         addPostsPreviewHandler();
 
         handleBookmark(tid);
@@ -219,6 +220,36 @@ define('forum/topic', [
             });
         });
     }
+
+    function displayGuidelinesModal(){
+        // Event handler for clicking the postVisibility element
+        $('[component="composer"]').on("click",'[component="composer/visibility"]', function(event) {
+            guidelinesModal();
+          });
+    };
+    
+
+    function guidelinesModal() {
+        const modal = bootbox.dialog({
+          message:"Community guidelines message here",  //$(".dialogueModal").html(),
+          title: "Community Guidelines",
+          buttons: [
+            {
+              label: "I understand",
+              className: "btn btn-primary",
+              callback: function() {
+              // Display a message to the user once they understand
+              modal.modal("hide");
+              }
+            },
+          ],
+          onEscape: function() {
+            modal.modal("hide");
+          }
+        });
+    
+        modal.modal("show");
+      }
 
     function addPostsPreviewHandler() {
         if (!ajaxify.data.showPostPreviewsOnHover || utils.isMobile()) {
