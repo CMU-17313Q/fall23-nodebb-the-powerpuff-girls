@@ -10,7 +10,7 @@ const topics = require('../topics');
 const categories = require('../categories');
 const groups = require('../groups');
 const utils = require('../utils');
-const ANONYMOUS_UID = -1;
+
 
 module.exports = function (Posts) {
     Posts.create = async function (data) {
