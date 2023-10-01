@@ -20,6 +20,7 @@ module.exports = function (Posts) {
         const content = data.content.toString();
         const timestamp = data.timestamp || Date.now();
         const isMain = data.isMain || false;
+        // added new constant postType to determine if anonymous or private
         const { postType } = data;
 
 
@@ -38,11 +39,8 @@ module.exports = function (Posts) {
             tid: tid,
             content: content,
             timestamp: timestamp,
-<<<<<<< HEAD
-            isAnonymous: false
-=======
+            // postType added
             postType: postType,
->>>>>>> 7def5522de816318f4381428eadf43b15ffc2577
         };
 
         if (data.toPid) {
@@ -54,19 +52,6 @@ module.exports = function (Posts) {
         if (data.handle && !parseInt(uid, 10)) {
             postData.handle = data.handle;
         }
-
-        // Adding and checking if Anonymous feature is enabled
-<<<<<<< HEAD
-        if (data.postVisibility === "anonymous"){
-            //postData.uid = ANONYMOUS_UID;
-            postData.handle = "Anonymous"
-            postData.isAnonymous = true;
-        } else {
-            postData.isAnonymous = false;
-        }
-=======
-        // making anonymous users' uid -4
->>>>>>> 7def5522de816318f4381428eadf43b15ffc2577
 
         let result = await plugins.hooks.fire('filter:post.create', { post: postData, data: data });
         postData = result.post;
