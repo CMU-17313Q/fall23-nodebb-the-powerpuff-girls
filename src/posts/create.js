@@ -10,6 +10,7 @@ const topics = require('../topics');
 const categories = require('../categories');
 const groups = require('../groups');
 const utils = require('../utils');
+const ANONYMOUS_UID = -1;
 
 module.exports = function (Posts) {
     Posts.create = async function (data) {
@@ -35,6 +36,7 @@ module.exports = function (Posts) {
             tid: tid,
             content: content,
             timestamp: timestamp,
+            isAnonymous: false
         };
 
         if (data.toPid) {
@@ -48,9 +50,8 @@ module.exports = function (Posts) {
         }
 
         // Adding and checking if Anonymous feature is enabled
-        // making anonymous users' uid -4
         if (data.postVisibility === "anonymous"){
-            postData.uid = -4;
+            //postData.uid = ANONYMOUS_UID;
             postData.handle = "Anonymous"
             postData.isAnonymous = true;
         } else {
