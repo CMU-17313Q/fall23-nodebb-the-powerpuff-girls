@@ -110,11 +110,19 @@ describe('Post\'s', () => {
     // test 1
     it('should change post visibility from public to anonymous', async () => {
         const newUID = await user.create({ username: 'newuser' });
-        const postResult = await topics.post({ uid: newUID, cid: cid, title: 'Test Anonymity', content: 'This                                                  is a test for anonmoity.', isAnonymous: 'anonymous' });
+        const postResult = await topics.post({ uid: newUID, cid: cid, title: 'Test Anonymity', content: 'This is a test for checking anonmoity.', isAnonymous: 'anonymous' });
         const res = postResult.postData.isAnonymous;
         assert.equal(res, 'anonymous');
     });
 
+    // test 2
+    it('should update postType from public to private', async () => {
+        const testUser = await user.create({ username: 'awashi' });
+        const post = await posts.create({ uid: testUser, cid: cid, title: 'Test Title', content: 'This is a test for the post.', postType:                              'private' });
+        const {pid} = post;
+        const res = await posts.getPostData(pid);
+        assert.equal(res.postType, 'private');
+    });
 
     it('should change owner of post and topic properly', async () => {
         const oldUid = await user.create({ username: 'olduser' });
