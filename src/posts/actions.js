@@ -53,8 +53,9 @@ module.exports = function (Posts) {
         if (parseInt(uid, 10) <= 0) {
             return false;
         }
-
         const isEndorsed = await db.getObjectField(`post:${pid}`, "isEndorsed");
-        return isEndorsed === "true";
+
+        // Check if isEndorsed is a string and its value is "true"
+        return isEndorsed === "true" || isEndorsed === true;
     };
 };
