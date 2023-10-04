@@ -1,4 +1,5 @@
 # Documentation of New Features Added
+- We created an Endorse feature and a Student Anonymity Feature
 ## Feature 1)
 **<span style="color:red;">Instructor Endorsement</span>**
 ### How to use: 
