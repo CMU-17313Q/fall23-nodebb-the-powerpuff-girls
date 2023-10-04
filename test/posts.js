@@ -116,12 +116,13 @@ describe('Post\'s', () => {
     });
 
     // test 2
-    it('should update postType from public to private', async () => {
+    it('should have undefined postType if ', async () => {
         const testUser = await user.create({ username: 'awashi' });
-        const post = await posts.create({ uid: testUser, cid: cid, title: 'Test Title', content: 'This is a test for the post.', postType: 'anon' });
+        const post = await posts.create({ uid: testUser, cid: cid, title: 'Test Title', content: 'This is a test for the post.' });
         const { pid } = post;
         const res = await posts.getPostData(pid);
-        assert.equal(res.postType, 'private');
+        console.log(res);
+        assert.equal(res.postType, null);
     });
 
     it('should change owner of post and topic properly', async () => {
