@@ -16,7 +16,7 @@
                         {{{each icons}}}{@value}{{{end}}}
                     </span>
                     <span component="topic/title">{title}</span>
-                    <span class="icon-{postType}" style="font-size: 16px; background-color: #f4f4f4; padding: 5px 10px; border-radius: 5px; color: #333; box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1); display: inline-block;">Anonymous Post</span>                </span>
+                    <span class="icon-{postType}" style="font-size: 13px; color: #fff; padding: 2px 10px; margin-left: 10px; border-radius: 5px; background-color: #333;  display: inline-block;"><i class="fa fa-user-secret" style ="color: #fff;" title="Anonymous Post"></i> (This post is anonymous)</span>                </span>
             </h1>
 
             <div class="topic-info clearfix">
