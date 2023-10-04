@@ -7,7 +7,7 @@ Login to NodeBB as an instructor and head over to the "Comments & Feedback" sect
 Run npm run test
 - we have several console log lines
 ### Where to find the tests:
-Run the tests under [Link to test/posts.js](test/posts.js)
+Find tests in [Link to test/posts.js](test/posts.js)
 ### What is being tested:
 We have created automated tests to test whether the post is being endorsed or undendorsed. In order to do this, we have created a mock user in the same test file whose account type is "instructor". Only the specified user with instrcutor account type can endorse/unendorse in the test. We also have a test that checks if the account type is a student and if it is, an error is thrown.
 ### Why we believe the tests are sufficient for covering the changes we have made:
@@ -16,9 +16,18 @@ The tests are comprehensive because they cover all cases related to the endorsem
 - check that students are prevented from endorsing
 
 Feature 2)
-**<span style="color:red;">Student Anonymity</span>**
-How to use:
-How to test:
-Where to find the tests:
-What is being tested:
-Why we believe the tests are sufficient for covering the changes we have made:
+**<span style="color:red;">Student Anonymity for Posts</span>**
+### How to use:
+Login to NodeBB System as a student and then go to the "Comments and Feedback" section. Once you landed on that page, you proceed to press the "New Post" button. You are then introduced to creating a new post and you see that there is a checkbox to post anonymously "Post Anonymous". You click the checkbox to enable posting anonymously and write your title and the content of your question. Then, when you submit the post your username should appear for you, but "anonymous" for everyone else.
+### How to test:
+npm run test
+### Where to find the tests:
+Find the tests in [Link to test/posts.js](test/posts.js)
+### What is being tested:
+Testing whether the postType changes to 'anon' when the check box is ticked.
+We are testing that the user's name is anonymous after clicking on that option by creating a dummy user and post in the test cases.
+### Why we believe the tests are sufficient for covering the changes we have made:
+We believe the tests are sufficient because they cover all aspects of the feature:
+- check if the student can post anonymously
+- students and instructors cannot see the username of the person who has posted anonymously
+- check if the instructor cannot post anonymously.
