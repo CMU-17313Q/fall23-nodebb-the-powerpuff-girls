@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - visibility-option-feature
   pull_request:
     branches:
       - main
