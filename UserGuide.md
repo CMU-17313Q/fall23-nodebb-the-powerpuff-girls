@@ -1,4 +1,5 @@
 # Documentation of New Features Added
+- We created an Endorse feature and a Student Anonymity Feature
 ## Feature 1)
 **<span style="color:red;">Instructor Endorsement</span>**
 ### How to use: 
@@ -15,7 +16,7 @@ The tests are comprehensive because they cover all cases related to the endorsem
 - check if instructors can endorse/unendorse a post
 - check that students are prevented from endorsing
 
-Feature 2)
+## Feature 2)
 **<span style="color:red;">Student Anonymity for Posts</span>**
 ### How to use:
 Login to NodeBB System as a student and then go to the "Comments and Feedback" section. Once you landed on that page, you proceed to press the "New Post" button. You are then introduced to creating a new post and you see that there is a checkbox to post anonymously "Post Anonymous". You click the checkbox to enable posting anonymously and write your title and the content of your question. Then, when you submit the post your username should appear for you, but "anonymous" for everyone else.
