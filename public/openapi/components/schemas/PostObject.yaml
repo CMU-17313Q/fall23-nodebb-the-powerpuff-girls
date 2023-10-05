@@ -1,6 +1,7 @@
 PostObject:
   description: A single post in the array returned from `Posts.getPostSummaryByPids`
   type: object
+  required: [pid, tid]
   properties:
     pid:
       type: number
@@ -14,6 +15,8 @@ PostObject:
       description: A user identifier
     timestamp:
       type: number
+    postType:
+      type: string
     deleted:
       type: boolean
     upvotes:

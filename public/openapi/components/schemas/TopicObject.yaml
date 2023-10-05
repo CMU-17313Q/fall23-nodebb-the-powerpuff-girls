@@ -98,6 +98,8 @@ TopicObject:
               description: A user identifier
             timestamp:
               type: number
+            postType:
+              type: string
             tid:
               type: number
               description: A topic identifier
