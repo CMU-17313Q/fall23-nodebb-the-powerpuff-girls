@@ -161,11 +161,11 @@ module.exports = function (Categories) {
 
         topics.forEach((topic) => {
             // set user credentials to Anonymous
-            if (topic.postType === 'anon') {
+            if (topic.postType === 'anonymous') {
                 topic.uid = 0;
                 topic.user = {
                     username: 'Anonymous',
-                    anon: true,
+                    anonymous: true,
                     displayname: 'Anonymous',
                 };
             }

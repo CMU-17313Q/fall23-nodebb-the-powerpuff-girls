@@ -110,13 +110,13 @@ describe('Post\'s', () => {
     // test 1
     it('should change post visibility from public to anonymous', async () => {
         const newUID = await user.create({ username: 'newuser' });
-        const postResult = await topics.post({ uid: newUID, cid: cid, title: 'Test Anonymity', content: 'This is a test for checking anonmoity.', postType: 'anon' });
+        const postResult = await topics.post({ uid: newUID, cid: cid, title: 'Test Anonymity', content: 'This is a test for checking anonymity.', postType: 'anonymous' });
         const res = postResult.postData.postType;
-        assert.equal(res, 'anon');
+        assert.equal(res, 'anonymous');
     });
 
     // test 2
-    it('should have undefined postType if ', async () => {
+    it('should have undefined postType if anon is not set up', async () => {
         const testUser = await user.create({ username: 'awashi' });
         const post = await posts.create({ uid: testUser, cid: cid, title: 'Test Title', content: 'This is a test for the post.' });
         const { pid } = post;

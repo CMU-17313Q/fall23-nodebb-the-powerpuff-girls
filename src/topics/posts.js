@@ -140,12 +140,12 @@ module.exports = function (Topics) {
                 postObj.replies = replies[i];
                 postObj.selfPost = parseInt(uid, 10) > 0 && parseInt(uid, 10) === postObj.uid;
 
-                // allow instructors to see the anon
-                if (postObj.postType === 'anon' && !postObj.selfPost) {
+                // for instructors
+                if (postObj.postType === 'anonymous' && !postObj.selfPost) {
                     postObj.uid = 0;
                     postObj.user = {
                         username: 'Anonymous',
-                        anon: true,
+                        anonymous: true,
                         displayname: 'Anonymous',
                     };
                     postObj.postTypeAnon = true;
