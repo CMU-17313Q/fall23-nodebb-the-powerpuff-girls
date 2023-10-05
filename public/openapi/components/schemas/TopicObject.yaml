@@ -206,6 +206,8 @@ TopicObjectSlim:
           type: string
         slug:
           type: string
+        postType:
+          type: string
         mainPid:
           type: number
           description: The post id of the first post in this topic (also called the "original post")
@@ -273,6 +275,8 @@ TopicObjectSlim:
     - type: object
       description: Optional properties that may or may not be present (except for `tid`, which is always present, and is only here as a hack to pass validation)
       properties:
+        postType:
+          type: string
         tid:
           type: number
           description: A topic identifier

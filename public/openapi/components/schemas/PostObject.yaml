@@ -63,6 +63,7 @@ PostObject:
           example: "#f44336"
     topic:
       type: object
+      required: [tid]
       properties:
         uid:
           type: number
@@ -83,6 +84,8 @@ PostObject:
           type: number
         timestamp:
           type: number
+        postType:
+          type: string
         timestampISO:
           type: string
           description: An ISO 8601 formatted date string (complementing `timestamp`)
