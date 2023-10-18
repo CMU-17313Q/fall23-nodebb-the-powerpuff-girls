@@ -29,6 +29,7 @@ define("forum/topic/postTools", [
     const PostTools = {};
 
     let staleReplyAnyway = false;
+    let currentButton;
 
     PostTools.init = function (tid) {
         staleReplyAnyway = false;
@@ -92,7 +93,7 @@ define("forum/topic/postTools", [
 
         postEl
             .find(
-                '[component="post/quote"], [component="post/bookmark"], [component="post/reply"], [component="post/flag"], [component="user/chat"]'
+                '[component="post/quote"], [component="post/bookmark"], [component="post/reply"], [component="post/flag"], [component="user/chat"], [component="post/endorse"]'
             )
             .toggleClass("hidden", isDeleted);
 
@@ -140,9 +141,14 @@ define("forum/topic/postTools", [
             onReplyClicked($(this), tid);
         });
 
-        postContainer.on("click", '[component="post/endorse"]', function () {
+        /* postContainer.on("click", '[component="post/endorse"]', function () {
             console.log("This is a debug message on cliking.");
             onEndorseClicked($(this), tid);
+        }); */
+
+        postContainer.on("click", '[component="post/endorse"]', function () {
+            console.log("This is a debug message on cliking.");
+            toggleEndorsement($(this));
         });
 
         $(".topic").on("click", '[component="topic/reply"]', function (e) {
@@ -460,7 +466,7 @@ define("forum/topic/postTools", [
         });
     }
 
-    async function onEndorseClicked(button, tid) {
+    /* async function onEndorseClicked(button, tid) { -- first simple
         const selectedNode = await getSelectedNode();
         console.log("This is a debug message.");
         showStaleWarning(async function () {
@@ -497,50 +503,156 @@ define("forum/topic/postTools", [
                                     postContent.append(
                                         `<div class="endorsement">${endorsedMessage}</div>`
                                     );
-
-                                    localStorage.setItem(
-                                        `endorsement_${toPid}`,
-                                        endorsedMessage
-                                    );
                                 }
                             }
                         }
                     }
                 );
-
-                /* hooks.fire("action:composer.addQuote", {
-                    tid: tid,
-                    pid: toPid,
-                    username: username,
-                    topicName: ajaxify.data.titleRaw,
-                    text: selectedNode.text,
-                }); */
             }
         });
+    } */
+
+    function toggleEndorsement(button) {
+        const isEndorsed = getData(button, "data-is-endorsed");
+        const pid = button.is('[component="post/endorse"]')
+            ? getData(button, "data-pid")
+            : null;
+
+        // Define the allowed methods
+        const allowedMethods = ["put", "del"];
+
+        // Check if the method is allowed
+        const method =
+            button.attr("data-is-endorsed") === "false" ? "put" : "del";
+
+        if (!allowedMethods.includes(method)) {
+            console.error(`Invalid method: ${method}`);
+            return;
+        }
+
+        // Now you can call the method on the api object
+        api[method](`/posts/${pid}/endorse`, undefined, function (err) {
+            if (err) {
+                return alerts.error(err);
+            }
+            const type = method === "put" ? "endorse" : "unendorse";
+
+            const endorsedMessage = "Instructor has endorsed this message";
+            const unendorsedMessage = "Instructor has unendorsed this message";
+
+            const post = button.parents("[data-pid]");
+
+            // Find the content element within the post
+            const postContent = post.find('[component="post/content"]');
+
+            // Display or hide the endorsement message based on the action
+            if (method === "put") {
+                if (postContent.length > 0) {
+                    bootbox.confirm(
+                        "Are you sure you want to endorse this answer?",
+                        function (confirm) {
+                            post.find(
+                                '[component="post/is-endorsed"]'
+                            ).removeClass("hidden");
+                            // Update the button's text and data-is-endorsed attribute
+                            button.text(
+                                method === "put" ? "Unendorse" : "Endorse"
+                            );
+                            button.attr(
+                                "data-is-endorsed",
+                                method === "put" ? "true" : "false"
+                            );
+                            /* postContent.append(
+                                `<div class="endorsement">${endorsedMessage}</div>`
+                            ); */
+
+                            localStorage.setItem(
+                                `endorsementState-${pid}`,
+                                "true"
+                            );
+                        }
+                    );
+                }
+            } else {
+                bootbox.confirm(
+                    "Are you sure you want to unendorse this answer?",
+                    function (confirm) {
+                        post.find('[component="post/is-endorsed"]').addClass(
+                            "hidden"
+                        );
+                        // Update the button's text and data-is-endorsed attribute
+                        button.text(method === "put" ? "Unendorse" : "Endorse");
+                        button.attr(
+                            "data-is-endorsed",
+                            method === "put" ? "true" : "false"
+                        );
+                        /*  postContent.append(
+                            `<div class="endorsement">${unendorsedMessage}</div>`
+                        ); */
+
+                        localStorage.setItem(
+                            `endorsementState-${pid}`,
+                            "false"
+                        );
+                    }
+                );
+            }
+
+            hooks.fire(`action:post.${type}`, { pid: pid });
+        });
+
+        console.log(
+            `API Request Method: ${method}, URL: /posts/${pid}/endorse`
+        );
     }
+
+    /* function checkEndorsementState() {
+        const isEndorsed = localStorage.getItem("endorsementState") === "true";
+        console.log(postContent);
+
+        // Display or hide the endorsement message based on the state
+        if (postContent && postContent.length > 0) {
+            if (isEndorsed) {
+                // Display the endorsement message
+                postContent.append(`endorsed`);
+            } else {
+                // Display the unendorsed message or clear the content
+                postContent.empty();
+                // or postContent.html(""); to clear the content
+                postContent.append(`unendorsed`);
+            }
+        }
+    } */
 
     // Inside a function that runs on page load
     function onPageLoad() {
         // Iterate through all posts on the page
         $("[data-pid]").each(function () {
             const postId = $(this).attr("data-pid");
-            const endorsement = localStorage.getItem(`endorsement_${postId}`);
-            if (endorsement) {
-                const postContent = $(this).find('[component="post/content"]');
-                postContent.append(
-                    `<div class="endorsement">${endorsement}</div>`
-                );
+            const isEndorsed = localStorage.getItem(
+                `endorsementState-${postId}`
+            ); // Use a unique key for each post
+            console.log(postId);
+            console.log(isEndorsed);
+            const postContent = $(this).find('[component="post/content"]');
+            const eMessage = $(this).find('[component="post/is-endorsed"]');
+            if (isEndorsed === "true") {
+                console.log(postId);
+                eMessage.removeClass("hidden");
+                postContent.append("endorsed ");
+            } else {
+                // console.log(postId);
+                eMessage.addClass("hidden");
+                postContent.append("unendorsed ");
             }
         });
     }
 
-    $(function () {
-        onPageLoad();
-    });
-
     $(window).on("action:ajaxify.end", function () {
         onPageLoad();
     });
+
+    // window.addEventListener("load", checkEndorsementState);
 
     async function getSelectedNode() {
         let selectedText = "";
@@ -585,6 +697,11 @@ define("forum/topic/postTools", [
     function bookmarkPost(button, pid) {
         const method =
             button.attr("data-bookmarked") === "false" ? "put" : "del";
+
+        // Log the API request before making it
+        console.log(
+            `API Request Method: ${method}, URL: /posts/${pid}/bookmark`
+        );
 
         api[method](`/posts/${pid}/bookmark`, undefined, function (err) {
             if (err) {
