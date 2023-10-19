@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Plato - src/user/index.js</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <!--[if lt IE 9]>
+  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+
+  <link href="../../assets/css/vendor/morris.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/bootstrap.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/font-awesome.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/codemirror.css" rel="stylesheet">
+  <link href="../../assets/css/plato.css" rel="stylesheet">
+  <link href="../../assets/css/plato-file.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+<div class="navbar navbar-fixed-top">
+  <div class="container">
+    <a class="navbar-brand" href="http://github.com/es-analysis/plato">Plato on Github</a>
+    <ul class="nav navbar-nav">
+      <li>
+        <a href="../../index.html">Report Home</a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="jumbotron">
+  <div class="container">
+    <h1>src/user/index.js</h1>
+  </div>
+</div>
+
+<div class="container aggregate-stats">
+  <div class="row">
+    <div class="col-md-6">
+      <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"  data-container="body"></i></a></h2>
+      <p class="stat">79.99</p>
+    </div>
+    <div class="col-md-6">
+      <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h2>
+      <p class="stat">294</p>
+    </div>
+  </div>
+  <div class="row historical">
+    <div class="col-md-6">
+      <p id="chart_historical_maint" class="chart"></p>
+    </div>
+    <div class="col-md-6">
+      <p id="chart_historical_sloc" class="chart"></p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty" data-container="body"></i></a></h2>
+      <p class="stat">44.25</p>
+    </div>
+    <div class="col-md-6">
+      <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs" data-container="body"></i></a></h2>
+      <p class="stat">2.93</p>
+    </div>
+  </div>
+</div>
+
+<div class="container charts">
+  <div class="row">
+    <h2 class="header">Function weight</h2>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <h3 class="chart-header">By Complexity <a href="http://en.wikipedia.org/wiki/Cyclomatic_complexity"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="This metric counts the number of distinct paths through a block of code. Lower values are better." data-original-title="Cyclomatic Complexity" data-container="body"></i></a></h3>
+      <div id="fn-by-complexity" class="stat"></div>
+    </div>
+    <div class="col-md-6">
+      <h3 class="chart-header">By SLOC  <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h3>
+      <div id="fn-by-sloc" class="stat"></div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row">
+    <textarea id="file-source" class="col-md-12">/* eslint-disable arrow-parens */
+/* eslint-disable no-mixed-operators */
+/* eslint-disable operator-linebreak */
+/* eslint-disable quotes */
+
+&quot;use strict&quot;;
+
+const _ = require(&quot;lodash&quot;);
+
+const groups = require(&quot;../groups&quot;);
+const plugins = require(&quot;../plugins&quot;);
+const db = require(&quot;../database&quot;);
+const privileges = require(&quot;../privileges&quot;);
+const categories = require(&quot;../categories&quot;);
+const meta = require(&quot;../meta&quot;);
+const utils = require(&quot;../utils&quot;);
+
+const User = module.exports;
+
+User.email = require(&quot;./email&quot;);
+User.notifications = require(&quot;./notifications&quot;);
+User.reset = require(&quot;./reset&quot;);
+User.digest = require(&quot;./digest&quot;);
+User.interstitials = require(&quot;./interstitials&quot;);
+
+require(&quot;./data&quot;)(User);
+require(&quot;./auth&quot;)(User);
+require(&quot;./bans&quot;)(User);
+require(&quot;./create&quot;)(User);
+require(&quot;./posts&quot;)(User);
+require(&quot;./topics&quot;)(User);
+require(&quot;./categories&quot;)(User);
+require(&quot;./follow&quot;)(User);
+require(&quot;./profile&quot;)(User);
+require(&quot;./admin&quot;)(User);
+require(&quot;./delete&quot;)(User);
+require(&quot;./settings&quot;)(User);
+require(&quot;./search&quot;)(User);
+require(&quot;./jobs&quot;)(User);
+require(&quot;./picture&quot;)(User);
+require(&quot;./approval&quot;)(User);
+require(&quot;./invite&quot;)(User);
+require(&quot;./password&quot;)(User);
+require(&quot;./info&quot;)(User);
+require(&quot;./online&quot;)(User);
+require(&quot;./blocks&quot;)(User);
+require(&quot;./uploads&quot;)(User);
+
+User.exists = async function (uids) {
+    return await (Array.isArray(uids)
+        ? db.isSortedSetMembers(&quot;users:joindate&quot;, uids)
+        : db.isSortedSetMember(&quot;users:joindate&quot;, uids));
+};
+
+User.existsBySlug = async function (userslug) {
+    const exists = await User.getUidByUserslug(userslug);
+    return !!exists;
+};
+
+User.getUidsFromSet = async function (set, start, stop) {
+    if (set === &quot;users:online&quot;) {
+        const count = parseInt(stop, 10) === -1 ? stop : stop - start + 1;
+        const now = Date.now();
+        return await db.getSortedSetRevRangeByScore(
+            set,
+            start,
+            count,
+            &quot;+inf&quot;,
+            now - meta.config.onlineCutoff * 60000
+        );
+    }
+    return await db.getSortedSetRevRange(set, start, stop);
+};
+
+User.getUsersFromSet = async function (set, uid, start, stop) {
+    const uids = await User.getUidsFromSet(set, start, stop);
+    return await User.getUsers(uids, uid);
+};
+
+User.getUsersWithFields = async function (uids, fields, uid) {
+    let results = await plugins.hooks.fire(&quot;filter:users.addFields&quot;, {
+        fields: fields,
+    });
+    results.fields = _.uniq(results.fields);
+    const userData = await User.getUsersFields(uids, results.fields);
+    results = await plugins.hooks.fire(&quot;filter:userlist.get&quot;, {
+        users: userData,
+        uid: uid,
+    });
+    return results.users;
+};
+
+User.getUsers = async function (uids, uid) {
+    const userData = await User.getUsersWithFields(
+        uids,
+        [
+            &quot;uid&quot;,
+            &quot;username&quot;,
+            &quot;userslug&quot;,
+            &quot;accounttype&quot;,
+            &quot;picture&quot;,
+            &quot;status&quot;,
+            &quot;postcount&quot;,
+            &quot;reputation&quot;,
+            &quot;email:confirmed&quot;,
+            &quot;lastonline&quot;,
+            &quot;flags&quot;,
+            &quot;banned&quot;,
+            &quot;banned:expire&quot;,
+            &quot;joindate&quot;,
+        ],
+        uid
+    );
+
+    return User.hidePrivateData(userData, uid);
+};
+
+User.getStatus = function (userData) {
+    if (userData.uid &lt;= 0) {
+        return &quot;offline&quot;;
+    }
+    const isOnline =
+        Date.now() - userData.lastonline &lt; meta.config.onlineCutoff * 60000;
+    return isOnline ? userData.status || &quot;online&quot; : &quot;offline&quot;;
+};
+
+User.getUidByUsername = async function (username) {
+    if (!username) {
+        return 0;
+    }
+    return await db.sortedSetScore(&quot;username:uid&quot;, username);
+};
+
+User.getUidsByUsernames = async function (usernames) {
+    return await db.sortedSetScores(&quot;username:uid&quot;, usernames);
+};
+
+User.getUidByUserslug = async function (userslug) {
+    if (!userslug) {
+        return 0;
+    }
+    return await db.sortedSetScore(&quot;userslug:uid&quot;, userslug);
+};
+
+User.getUsernamesByUids = async function (uids) {
+    const users = await User.getUsersFields(uids, [&quot;username&quot;]);
+    return users.map((user) =&gt; user.username);
+};
+
+User.getUsernameByUserslug = async function (slug) {
+    const uid = await User.getUidByUserslug(slug);
+    return await User.getUserField(uid, &quot;username&quot;);
+};
+
+User.getUidByEmail = async function (email) {
+    return await db.sortedSetScore(&quot;email:uid&quot;, email.toLowerCase());
+};
+
+User.getUidsByEmails = async function (emails) {
+    emails = emails.map((email) =&gt; email &amp;&amp; email.toLowerCase());
+    return await db.sortedSetScores(&quot;email:uid&quot;, emails);
+};
+
+User.getUsernameByEmail = async function (email) {
+    const uid = await db.sortedSetScore(
+        &quot;email:uid&quot;,
+        String(email).toLowerCase()
+    );
+    return await User.getUserField(uid, &quot;username&quot;);
+};
+
+User.isModerator = async function (uid, cid) {
+    return await privileges.users.isModerator(uid, cid);
+};
+
+User.isInstructor = async function (uid) {
+    return await privileges.users.isInstructor(uid);
+};
+
+User.isModeratorOfAnyCategory = async function (uid) {
+    const cids = await User.getModeratedCids(uid);
+    return Array.isArray(cids) ? !!cids.length : false;
+};
+
+User.isAdministrator = async function (uid) {
+    return await privileges.users.isAdministrator(uid);
+};
+
+User.isGlobalModerator = async function (uid) {
+    return await privileges.users.isGlobalModerator(uid);
+};
+
+User.getPrivileges = async function (uid) {
+    return await utils.promiseParallel({
+        isAdmin: User.isAdministrator(uid),
+        isGlobalModerator: User.isGlobalModerator(uid),
+        isModeratorOfAnyCategory: User.isModeratorOfAnyCategory(uid),
+    });
+};
+
+User.isPrivileged = async function (uid) {
+    if (!(parseInt(uid, 10) &gt; 0)) {
+        return false;
+    }
+    const results = await User.getPrivileges(uid);
+    return results
+        ? results.isAdmin ||
+              results.isGlobalModerator ||
+              results.isModeratorOfAnyCategory
+        : false;
+};
+
+User.isAdminOrGlobalMod = async function (uid) {
+    const [isAdmin, isGlobalMod] = await Promise.all([
+        User.isAdministrator(uid),
+        User.isGlobalModerator(uid),
+    ]);
+    return isAdmin || isGlobalMod;
+};
+
+User.isAdminOrSelf = async function (callerUid, uid) {
+    await isSelfOrMethod(callerUid, uid, User.isAdministrator);
+};
+
+User.isAdminOrGlobalModOrSelf = async function (callerUid, uid) {
+    await isSelfOrMethod(callerUid, uid, User.isAdminOrGlobalMod);
+};
+
+User.isPrivilegedOrSelf = async function (callerUid, uid) {
+    await isSelfOrMethod(callerUid, uid, User.isPrivileged);
+};
+
+async function isSelfOrMethod(callerUid, uid, method) {
+    if (parseInt(callerUid, 10) === parseInt(uid, 10)) {
+        return;
+    }
+    const isPass = await method(callerUid);
+    if (!isPass) {
+        throw new Error(&quot;[[error:no-privileges]]&quot;);
+    }
+}
+
+User.getAdminsandGlobalMods = async function () {
+    const results = await groups.getMembersOfGroups([
+        &quot;administrators&quot;,
+        &quot;Global Moderators&quot;,
+    ]);
+    return await User.getUsersData(_.union(...results));
+};
+
+User.getAdminsandGlobalModsandModerators = async function () {
+    const results = await Promise.all([
+        groups.getMembers(&quot;administrators&quot;, 0, -1),
+        groups.getMembers(&quot;Global Moderators&quot;, 0, -1),
+        User.getModeratorUids(),
+    ]);
+    return await User.getUsersData(_.union(...results));
+};
+
+User.getFirstAdminUid = async function () {
+    return (
+        await db.getSortedSetRange(&quot;group:administrators:members&quot;, 0, 0)
+    )[0];
+};
+
+User.getModeratorUids = async function () {
+    const cids = await categories.getAllCidsFromSet(&quot;categories:cid&quot;);
+    const uids = await categories.getModeratorUids(cids);
+    return _.union(...uids);
+};
+
+User.getModeratedCids = async function (uid) {
+    if (parseInt(uid, 10) &lt;= 0) {
+        return [];
+    }
+    const cids = await categories.getAllCidsFromSet(&quot;categories:cid&quot;);
+    const isMods = await User.isModerator(uid, cids);
+    return cids.filter((cid, index) =&gt; cid &amp;&amp; isMods[index]);
+};
+
+User.addInterstitials = function (callback) {
+    plugins.hooks.register(&quot;core&quot;, {
+        hook: &quot;filter:register.interstitial&quot;,
+        method: [
+            User.interstitials.email, // Email address (for password reset + digest)
+            User.interstitials.gdpr, // GDPR information collection/processing consent + email consent
+            User.interstitials.tou, // Forum Terms of Use
+        ],
+    });
+
+    callback();
+};
+
+require(&quot;../promisify&quot;)(User);</textarea>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <p>.</p>
+  </div>
+</footer>
+
+<script type="text/html" id="complexity-popover-template">
+  <div class="complexity-notice">
+    Complexity : {{ cyclomatic }} <br>
+    Length : {{ halstead.length }} <br>
+    Difficulty : {{ halstead.difficulty.toFixed(2) }} <br>
+    Est # bugs : {{ halstead.bugs.toFixed(2) }}<br>
+  </div>
+</script>
+
+<script type="text/javascript" src="../../assets/scripts/bundles/core-bundle.js"></script>
+<script type="text/javascript" src="../../assets/scripts/bundles/codemirror.js"></script>
+<script type="text/javascript" src="../../assets/scripts/codemirror.markpopovertext.js"></script>
+<script type="text/javascript" src="report.js"></script>
+<script type="text/javascript" src="report.history.js"></script>
+<script type="text/javascript" src="../../assets/scripts/plato-file.js"></script>
+</body>
+</html>
