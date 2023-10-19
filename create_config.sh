@@ -38,3 +38,4 @@ json_data=$(jq --arg password "$REDIS_PASSWORD" '.redis.password = $password' <<
 echo "$json_data" > "/usr/src/app/config.json"
 
 cat /usr/src/app/config.json
+
