@@ -40,7 +40,7 @@ postsController.getRecentPosts = async function (req, res) {
         req.uid,
         start,
         stop,
-        req.params.term
+        req.params.term,
     );
     res.json(data);
 };

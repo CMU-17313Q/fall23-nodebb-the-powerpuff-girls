@@ -64,25 +64,25 @@ postsAPI.edit = async function (caller, data) {
 
     if (data.title && data.title.length < meta.config.minimumTitleLength) {
         throw new Error(
-            `[[error:title-too-short, ${meta.config.minimumTitleLength}]]`
+            `[[error:title-too-short, ${meta.config.minimumTitleLength}]]`,
         );
     } else if (
         data.title &&
         data.title.length > meta.config.maximumTitleLength
     ) {
         throw new Error(
-            `[[error:title-too-long, ${meta.config.maximumTitleLength}]]`
+            `[[error:title-too-long, ${meta.config.maximumTitleLength}]]`,
         );
     } else if (
         meta.config.minimumPostLength !== 0 &&
         contentLen < meta.config.minimumPostLength
     ) {
         throw new Error(
-            `[[error:content-too-short, ${meta.config.minimumPostLength}]]`
+            `[[error:content-too-short, ${meta.config.minimumPostLength}]]`,
         );
     } else if (contentLen > meta.config.maximumPostLength) {
         throw new Error(
-            `[[error:content-too-long, ${meta.config.maximumPostLength}]]`
+            `[[error:content-too-long, ${meta.config.maximumPostLength}]]`,
         );
     }
 
@@ -120,7 +120,7 @@ postsAPI.edit = async function (caller, data) {
     const postObj = await posts.getPostSummaryByPids(
         [editResult.post.pid],
         caller.uid,
-        {}
+        {},
     );
     const returnData = { ...postObj[0], ...editResult.post };
     returnData.topic = { ...postObj[0].topic, ...editResult.post.topic };
@@ -141,7 +141,7 @@ postsAPI.edit = async function (caller, data) {
 
     const uids = _.uniq(_.flatten(memberData).concat(String(caller.uid)));
     uids.forEach((uid) =>
-        websockets.in(`uid_${uid}`).emit("event:post_edited", editResult)
+        websockets.in(`uid_${uid}`).emit("event:post_edited", editResult),
     );
     return returnData;
 };
@@ -199,7 +199,7 @@ async function deleteOrRestoreTopicOf(command, pid, caller) {
         command,
         topic.deleted ? "event:topic_restored" : "event:topic_deleted",
         caller,
-        { tids: [topic.tid], cid: topic.cid }
+        { tids: [topic.tid], cid: topic.cid },
     );
 }
 
@@ -292,7 +292,7 @@ postsAPI.move = async function (caller, data) {
             data.pid,
             caller.uid,
             "move",
-            "notifications:moved_your_post"
+            "notifications:moved_your_post",
         );
     }
 };
@@ -303,7 +303,7 @@ postsAPI.upvote = async function (caller, data) {
         "upvote",
         "voted",
         "notifications:upvoted_your_post_in",
-        data
+        data,
     );
 };
 
@@ -321,7 +321,7 @@ postsAPI.bookmark = async function (caller, data) {
         "bookmark",
         "bookmarked",
         "",
-        data
+        data,
     );
 };
 
@@ -331,7 +331,7 @@ postsAPI.unbookmark = async function (caller, data) {
         "unbookmark",
         "bookmarked",
         "",
-        data
+        data,
     );
 };
 
@@ -341,7 +341,7 @@ postsAPI.endorse = async function (caller, data) {
         "endorse",
         "endorsed",
         "",
-        data
+        data,
     );
 };
 
@@ -351,7 +351,7 @@ postsAPI.unendorse = async function (caller, data) {
         "unendorse",
         "endorsed",
         "",
-        data
+        data,
     );
 };
 
@@ -379,7 +379,7 @@ postsAPI.getDiffs = async (caller, data) => {
     uids.push(post.uid);
     let usernames = await user.getUsersFields(uids, ["username"]);
     usernames = usernames.map((userObj) =>
-        userObj.uid ? userObj.username : null
+        userObj.uid ? userObj.username : null,
     );
 
     const cid = await posts.getCidByPid(data.pid);
@@ -417,7 +417,7 @@ postsAPI.restoreDiff = async (caller, data) => {
     const canEdit = await privileges.categories.can(
         "posts:edit",
         cid,
-        caller.uid
+        caller.uid,
     );
     if (!canEdit) {
         throw new Error("[[error:no-privileges]]");
@@ -427,7 +427,7 @@ postsAPI.restoreDiff = async (caller, data) => {
         data.pid,
         data.since,
         caller.uid,
-        apiHelpers.buildReqObject(caller)
+        apiHelpers.buildReqObject(caller),
     );
     websockets.in(`topic_${edit.topic.tid}`).emit("event:post_edited", edit);
 };

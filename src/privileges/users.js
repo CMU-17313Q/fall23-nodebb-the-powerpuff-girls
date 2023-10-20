@@ -40,7 +40,7 @@ privsUsers.isGlobalModerator = async function (uid) {
 async function isGroupMember(uid, groupName) {
     return await groups[Array.isArray(uid) ? "isMembers" : "isMember"](
         uid,
-        groupName
+        groupName,
     );
 }
 
@@ -58,7 +58,7 @@ async function isModeratorOfCategories(cids, uid) {
         return await filterIsModerator(
             cids,
             uid,
-            cids.map(() => false)
+            cids.map(() => false),
         );
     }
 
@@ -67,7 +67,7 @@ async function isModeratorOfCategories(cids, uid) {
         return await filterIsModerator(
             cids,
             uid,
-            cids.map(() => true)
+            cids.map(() => true),
         );
     }
     const uniqueCids = _.uniq(cids);
@@ -84,11 +84,11 @@ async function isModeratorsOfCategory(cid, uids) {
         groups.isMembers(uids, `cid:${cid}:privileges:moderate`),
         groups.isMembersOfGroupList(
             uids,
-            `cid:${cid}:privileges:groups:moderate`
+            `cid:${cid}:privileges:groups:moderate`,
         ),
     ]);
     const isModerator = uids.map(
-        (uid, idx) => check1[idx] || check2[idx] || check3[idx]
+        (uid, idx) => check1[idx] || check2[idx] || check3[idx],
     );
     return await filterIsModerator(cid, uids, isModerator);
 }
@@ -199,7 +199,7 @@ async function hasGlobalPrivilege(privilege, uid) {
     payload[`can${privilegeName}`] = await privsGlobal.can(privilege, uid);
     payload = await plugins.hooks.fire(
         `filter:user.has${privilegeName}Privilege`,
-        payload
+        payload,
     );
     return payload[`can${privilegeName}`];
 }

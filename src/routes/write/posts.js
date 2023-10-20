@@ -20,14 +20,14 @@ module.exports = function () {
         "put",
         "/:pid",
         [...middlewares, middleware.checkRequired.bind(null, ["content"])],
-        controllers.write.posts.edit
+        controllers.write.posts.edit,
     );
     setupApiRoute(
         router,
         "delete",
         "/:pid",
         [...middlewares, middleware.assert.post],
-        controllers.write.posts.purge
+        controllers.write.posts.purge,
     );
 
     setupApiRoute(
@@ -35,14 +35,14 @@ module.exports = function () {
         "put",
         "/:pid/state",
         [...middlewares, middleware.assert.post],
-        controllers.write.posts.restore
+        controllers.write.posts.restore,
     );
     setupApiRoute(
         router,
         "delete",
         "/:pid/state",
         [...middlewares, middleware.assert.post],
-        controllers.write.posts.delete
+        controllers.write.posts.delete,
     );
 
     setupApiRoute(
@@ -54,7 +54,7 @@ module.exports = function () {
             middleware.assert.post,
             middleware.checkRequired.bind(null, ["tid"]),
         ],
-        controllers.write.posts.move
+        controllers.write.posts.move,
     );
 
     setupApiRoute(
@@ -66,14 +66,14 @@ module.exports = function () {
             middleware.checkRequired.bind(null, ["delta"]),
             middleware.assert.post,
         ],
-        controllers.write.posts.vote
+        controllers.write.posts.vote,
     );
     setupApiRoute(
         router,
         "delete",
         "/:pid/vote",
         [...middlewares, middleware.assert.post],
-        controllers.write.posts.unvote
+        controllers.write.posts.unvote,
     );
 
     setupApiRoute(
@@ -81,14 +81,14 @@ module.exports = function () {
         "put",
         "/:pid/bookmark",
         [...middlewares, middleware.assert.post],
-        controllers.write.posts.bookmark
+        controllers.write.posts.bookmark,
     );
     setupApiRoute(
         router,
         "delete",
         "/:pid/bookmark",
         [...middlewares, middleware.assert.post],
-        controllers.write.posts.unbookmark
+        controllers.write.posts.unbookmark,
     );
 
     // Define an API route for endorsing a post
@@ -97,7 +97,7 @@ module.exports = function () {
         "put", // Use "put" for endorsing
         "/:pid/endorse",
         [...middlewares, middleware.assert.post],
-        controllers.write.posts.endorse
+        controllers.write.posts.endorse,
     );
 
     // Define an API route for unendorsing a post
@@ -106,7 +106,7 @@ module.exports = function () {
         "delete", // Use "delete" for unendorsing
         "/:pid/endorse",
         [...middlewares, middleware.assert.post],
-        controllers.write.posts.unendorse
+        controllers.write.posts.unendorse,
     );
 
     setupApiRoute(
@@ -114,28 +114,28 @@ module.exports = function () {
         "get",
         "/:pid/diffs",
         [middleware.assert.post],
-        controllers.write.posts.getDiffs
+        controllers.write.posts.getDiffs,
     );
     setupApiRoute(
         router,
         "get",
         "/:pid/diffs/:since",
         [middleware.assert.post],
-        controllers.write.posts.loadDiff
+        controllers.write.posts.loadDiff,
     );
     setupApiRoute(
         router,
         "put",
         "/:pid/diffs/:since",
         [...middlewares, middleware.assert.post],
-        controllers.write.posts.restoreDiff
+        controllers.write.posts.restoreDiff,
     );
     setupApiRoute(
         router,
         "delete",
         "/:pid/diffs/:timestamp",
         [...middlewares, middleware.assert.post],
-        controllers.write.posts.deleteDiff
+        controllers.write.posts.deleteDiff,
     );
 
     return router;

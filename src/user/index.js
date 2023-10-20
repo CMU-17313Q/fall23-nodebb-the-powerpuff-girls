@@ -66,7 +66,7 @@ User.getUidsFromSet = async function (set, start, stop) {
             start,
             count,
             "+inf",
-            now - meta.config.onlineCutoff * 60000
+            now - meta.config.onlineCutoff * 60000,
         );
     }
     return await db.getSortedSetRevRange(set, start, stop);
@@ -109,7 +109,7 @@ User.getUsers = async function (uids, uid) {
             "banned:expire",
             "joindate",
         ],
-        uid
+        uid,
     );
 
     return User.hidePrivateData(userData, uid);
@@ -164,7 +164,7 @@ User.getUidsByEmails = async function (emails) {
 User.getUsernameByEmail = async function (email) {
     const uid = await db.sortedSetScore(
         "email:uid",
-        String(email).toLowerCase()
+        String(email).toLowerCase(),
     );
     return await User.getUserField(uid, "username");
 };
