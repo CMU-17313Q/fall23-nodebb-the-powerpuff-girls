@@ -23,6 +23,8 @@ require('./require-main');
 
 const nconf = require('nconf');
 
+
+
 nconf.argv().env({
     separator: '__',
 });
@@ -30,6 +32,7 @@ nconf.argv().env({
 const winston = require('winston');
 const path = require('path');
 
+const Iroh = require('iroh');
 const file = require('./src/file');
 
 process.env.NODE_ENV = process.env.NODE_ENV || 'production';
@@ -41,6 +44,65 @@ const configFile = path.resolve(__dirname, nconf.any(['config', 'CONFIG']) || 'c
 const configExists = file.existsSync(configFile) || (nconf.get('url') && nconf.get('secret') && nconf.get('database'));
 
 const prestart = require('./src/prestart');
+
+
+
+const stage = new Iroh.Stage(`
+function factorial(n) {
+  if (n === 0) return 1;
+  return n * factorial(n - 1);
+};
+factorial(3);
+`);
+
+// function call
+stage.addListener(Iroh.CALL)
+    .on('before', (e) => {
+        const external = e.external ? '#external' : '';
+        console.log(`${' '.repeat(e.indent)}call`, e.name, external, '(', e.arguments, ')');
+        // console.log(e.getSource());
+    })
+    .on('after', (e) => {
+        const external = e.external ? '#external' : '';
+        console.log(`${' '.repeat(e.indent)}call`, e.name, 'end', external, '->', [e.return]);
+        // console.log(e.getSource());
+    });
+
+// function
+stage.addListener(Iroh.FUNCTION)
+    .on('enter', (e) => {
+        const sloppy = e.sloppy ? '#sloppy' : '';
+        if (e.sloppy) {
+            console.log(`${' '.repeat(e.indent)}call`, e.name, sloppy, '(', e.arguments, ')');
+            // console.log(e.getSource());
+        }
+    })
+    .on('leave', (e) => {
+        const sloppy = e.sloppy ? '#sloppy' : '';
+        if (e.sloppy) {
+            console.log(`${' '.repeat(e.indent)}call`, e.name, 'end', sloppy, '->', [void 0]);
+            // console.log(e.getSource());
+        }
+    })
+    .on('return', (e) => {
+        const sloppy = e.sloppy ? '#sloppy' : '';
+        if (e.sloppy) {
+            console.log(`${' '.repeat(e.indent)}call`, e.name, 'end', sloppy, '->', [e.return]);
+            // console.log(e.getSource());
+        }
+    });
+
+// program
+stage.addListener(Iroh.PROGRAM)
+    .on('enter', (e) => {
+        console.log(`${' '.repeat(e.indent)}Program`);
+    })
+    .on('leave', (e) => {
+        console.log(`${' '.repeat(e.indent)}Program end`, '->', e.return);
+    });
+
+eval(stage.script);
+
 
 prestart.loadConfig(configFile);
 prestart.setupWinston();
