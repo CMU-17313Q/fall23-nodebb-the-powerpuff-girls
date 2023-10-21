@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - visibility-option-feature
+      - dynamic-tool
   pull_request:
     branches:
       - main
