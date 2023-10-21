@@ -68,33 +68,10 @@ stage.addListener(Iroh.CALL)
         // console.log(e.getSource());
     });
 
-// function
-stage.addListener(Iroh.FUNCTION)
-    .on('enter', (e) => {
-        const sloppy = e.sloppy ? '#sloppy' : '';
-        if (e.sloppy) {
-            console.log(`${' '.repeat(e.indent)}call`, e.name, sloppy, '(', e.arguments, ')');
-            // console.log(e.getSource());
-        }
-    })
-    .on('leave', (e) => {
-        const sloppy = e.sloppy ? '#sloppy' : '';
-        if (e.sloppy) {
-            console.log(`${' '.repeat(e.indent)}call`, e.name, 'end', sloppy, '->', [void 0]);
-            // console.log(e.getSource());
-        }
-    })
-    .on('return', (e) => {
-        const sloppy = e.sloppy ? '#sloppy' : '';
-        if (e.sloppy) {
-            console.log(`${' '.repeat(e.indent)}call`, e.name, 'end', sloppy, '->', [e.return]);
-            // console.log(e.getSource());
-        }
-    });
-
 // program
 stage.addListener(Iroh.PROGRAM)
     .on('enter', (e) => {
+        console.log('Example code call trace with iroh: ');
         console.log(`${' '.repeat(e.indent)}Program`);
     })
     .on('leave', (e) => {
