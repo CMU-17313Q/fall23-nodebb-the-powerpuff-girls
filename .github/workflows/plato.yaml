@@ -76,5 +76,8 @@ jobs:
         run: |
           node app --setup="${SETUP}" --ci="${CI}"
 
+      - name: Install Plato
+        run: npm install -g plato
+
       - name: Run Plato Tool
         run: plato -r -d report public/src/client/topic/postTools.js
