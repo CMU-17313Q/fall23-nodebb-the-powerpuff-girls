@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Plato - public/src/client/topic/postTools.js</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <!--[if lt IE 9]>
+  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+
+  <link href="../../assets/css/vendor/morris.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/bootstrap.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/font-awesome.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/codemirror.css" rel="stylesheet">
+  <link href="../../assets/css/plato.css" rel="stylesheet">
+  <link href="../../assets/css/plato-file.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+<div class="navbar navbar-fixed-top">
+  <div class="container">
+    <a class="navbar-brand" href="http://github.com/es-analysis/plato">Plato on Github</a>
+    <ul class="nav navbar-nav">
+      <li>
+        <a href="../../index.html">Report Home</a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="jumbotron">
+  <div class="container">
+    <h1>public/src/client/topic/postTools.js</h1>
+  </div>
+</div>
+
+<div class="container aggregate-stats">
+  <div class="row">
+    <div class="col-md-6">
+      <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"  data-container="body"></i></a></h2>
+      <p class="stat">69.00</p>
+    </div>
+    <div class="col-md-6">
+      <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h2>
+      <p class="stat">940</p>
+    </div>
+  </div>
+  <div class="row historical">
+    <div class="col-md-6">
+      <p id="chart_historical_maint" class="chart"></p>
+    </div>
+    <div class="col-md-6">
+      <p id="chart_historical_sloc" class="chart"></p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty" data-container="body"></i></a></h2>
+      <p class="stat">53.88</p>
+    </div>
+    <div class="col-md-6">
+      <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs" data-container="body"></i></a></h2>
+      <p class="stat">7.99</p>
+    </div>
+  </div>
+</div>
+
+<div class="container charts">
+  <div class="row">
+    <h2 class="header">Function weight</h2>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <h3 class="chart-header">By Complexity <a href="http://en.wikipedia.org/wiki/Cyclomatic_complexity"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="This metric counts the number of distinct paths through a block of code. Lower values are better." data-original-title="Cyclomatic Complexity" data-container="body"></i></a></h3>
+      <div id="fn-by-complexity" class="stat"></div>
+    </div>
+    <div class="col-md-6">
+      <h3 class="chart-header">By SLOC  <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h3>
+      <div id="fn-by-sloc" class="stat"></div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row">
+    <textarea id="file-source" class="col-md-12">/* eslint-disable no-unused-vars */
+/* eslint-disable quotes */
+/* eslint-disable operator-linebreak */
+/* eslint-disable no-mixed-operators */
+
+&quot;use strict&quot;;
+
+define(&quot;forum/topic/postTools&quot;, [
+    &quot;share&quot;,
+    &quot;navigator&quot;,
+    &quot;components&quot;,
+    &quot;translator&quot;,
+    &quot;forum/topic/votes&quot;,
+    &quot;api&quot;,
+    &quot;bootbox&quot;,
+    &quot;alerts&quot;,
+    &quot;hooks&quot;,
+], function (
+    share,
+    navigator,
+    components,
+    translator,
+    votes,
+    api,
+    bootbox,
+    alerts,
+    hooks
+) {
+    const PostTools = {};
+
+    let staleReplyAnyway = false;
+    let currentButton;
+
+    PostTools.init = function (tid) {
+        staleReplyAnyway = false;
+
+        renderMenu();
+
+        addPostHandlers(tid);
+
+        share.addShareHandlers(ajaxify.data.titleRaw);
+
+        votes.addVoteHandler();
+
+        PostTools.updatePostCount(ajaxify.data.postcount);
+    };
+
+    function renderMenu() {
+        $(&#039;[component=&quot;topic&quot;]&#039;).on(
+            &quot;show.bs.dropdown&quot;,
+            &quot;.moderator-tools&quot;,
+            function () {
+                const $this = $(this);
+                const dropdownMenu = $this.find(&quot;.dropdown-menu&quot;);
+                if (dropdownMenu.html()) {
+                    return;
+                }
+                const postEl = $this.parents(&quot;[data-pid]&quot;);
+                const pid = postEl.attr(&quot;data-pid&quot;);
+                const index = parseInt(postEl.attr(&quot;data-index&quot;), 10);
+
+                socket.emit(
+                    &quot;posts.loadPostTools&quot;,
+                    { pid: pid, cid: ajaxify.data.cid },
+                    async (err, data) =&gt; {
+                        if (err) {
+                            return alerts.error(err);
+                        }
+                        data.posts.display_move_tools =
+                            data.posts.display_move_tools &amp;&amp; index !== 0;
+
+                        const html = await app.parseAndTranslate(
+                            &quot;partials/topic/post-menu-list&quot;,
+                            data
+                        );
+                        const clipboard = require(&quot;clipboard&quot;);
+
+                        dropdownMenu.html(html);
+                        dropdownMenu.get(0).classList.toggle(&quot;hidden&quot;, false);
+                        new clipboard(&quot;[data-clipboard-text]&quot;);
+
+                        hooks.fire(&quot;action:post.tools.load&quot;, {
+                            element: dropdownMenu,
+                        });
+                    }
+                );
+            }
+        );
+    }
+
+    PostTools.toggle = function (pid, isDeleted) {
+        const postEl = components.get(&quot;post&quot;, &quot;pid&quot;, pid);
+
+        postEl
+            .find(
+                &#039;[component=&quot;post/quote&quot;], [component=&quot;post/bookmark&quot;], [component=&quot;post/reply&quot;], [component=&quot;post/flag&quot;], [component=&quot;user/chat&quot;], [component=&quot;post/endorse&quot;]&#039;
+            )
+            .toggleClass(&quot;hidden&quot;, isDeleted);
+
+        postEl
+            .find(&#039;[component=&quot;post/delete&quot;]&#039;)
+            .toggleClass(&quot;hidden&quot;, isDeleted)
+            .parent()
+            .attr(&quot;hidden&quot;, isDeleted ? &quot;&quot; : null);
+        postEl
+            .find(&#039;[component=&quot;post/restore&quot;]&#039;)
+            .toggleClass(&quot;hidden&quot;, !isDeleted)
+            .parent()
+            .attr(&quot;hidden&quot;, !isDeleted ? &quot;&quot; : null);
+        postEl
+            .find(&#039;[component=&quot;post/purge&quot;]&#039;)
+            .toggleClass(&quot;hidden&quot;, !isDeleted)
+            .parent()
+            .attr(&quot;hidden&quot;, !isDeleted ? &quot;&quot; : null);
+
+        PostTools.removeMenu(postEl);
+    };
+
+    PostTools.removeMenu = function (postEl) {
+        postEl.find(&#039;[component=&quot;post/tools&quot;] .dropdown-menu&#039;).html(&quot;&quot;);
+    };
+
+    PostTools.updatePostCount = function (postCount) {
+        const postCountEl = components.get(&quot;topic/post-count&quot;);
+        postCountEl.html(postCount).attr(&quot;title&quot;, postCount);
+        utils.makeNumbersHumanReadable(postCountEl);
+        navigator.setCount(postCount);
+    };
+
+    function addPostHandlers(tid) {
+        const postContainer = components.get(&quot;topic&quot;);
+
+        handleSelectionTooltip();
+
+        postContainer.on(&quot;click&quot;, &#039;[component=&quot;post/quote&quot;]&#039;, function () {
+            onQuoteClicked($(this), tid);
+        });
+
+        postContainer.on(&quot;click&quot;, &#039;[component=&quot;post/reply&quot;]&#039;, function () {
+            console.log(&quot;This is a debug message on cliking reply.&quot;);
+            onReplyClicked($(this), tid);
+        });
+
+        /* postContainer.on(&quot;click&quot;, &#039;[component=&quot;post/endorse&quot;]&#039;, function () {
+            console.log(&quot;This is a debug message on cliking.&quot;);
+            onEndorseClicked($(this), tid);
+        }); */
+
+        postContainer.on(&quot;click&quot;, &#039;[component=&quot;post/endorse&quot;]&#039;, function () {
+            console.log(&quot;This is a debug message on cliking.&quot;);
+            toggleEndorsement($(this));
+        });
+
+        $(&quot;.topic&quot;).on(&quot;click&quot;, &#039;[component=&quot;topic/reply&quot;]&#039;, function (e) {
+            e.preventDefault();
+            onReplyClicked($(this), tid);
+        });
+
+        $(&quot;.topic&quot;).on(
+            &quot;click&quot;,
+            &#039;[component=&quot;topic/reply-as-topic&quot;]&#039;,
+            function () {
+                translator.translate(
+                    &quot;[[topic:link_back, &quot; +
+                        ajaxify.data.titleRaw +
+                        &quot;, &quot; +
+                        config.relative_path +
+                        &quot;/topic/&quot; +
+                        ajaxify.data.slug +
+                        &quot;]]&quot;,
+                    function (body) {
+                        hooks.fire(&quot;action:composer.topic.new&quot;, {
+                            cid: ajaxify.data.cid,
+                            body: body,
+                        });
+                    }
+                );
+            }
+        );
+
+        postContainer.on(&quot;click&quot;, &#039;[component=&quot;post/bookmark&quot;]&#039;, function () {
+            return bookmarkPost($(this), getData($(this), &quot;data-pid&quot;));
+        });
+
+        postContainer.on(&quot;click&quot;, &#039;[component=&quot;post/upvote&quot;]&#039;, function () {
+            return votes.toggleVote($(this), &quot;.upvoted&quot;, 1);
+        });
+
+        postContainer.on(&quot;click&quot;, &#039;[component=&quot;post/downvote&quot;]&#039;, function () {
+            return votes.toggleVote($(this), &quot;.downvoted&quot;, -1);
+        });
+
+        postContainer.on(&quot;click&quot;, &#039;[component=&quot;post/vote-count&quot;]&#039;, function () {
+            votes.showVotes(getData($(this), &quot;data-pid&quot;));
+        });
+
+        postContainer.on(&quot;click&quot;, &#039;[component=&quot;post/flag&quot;]&#039;, function () {
+            const pid = getData($(this), &quot;data-pid&quot;);
+            require([&quot;flags&quot;], function (flags) {
+                flags.showFlagModal({
+                    type: &quot;post&quot;,
+                    id: pid,
+                });
+            });
+        });
+
+        postContainer.on(&quot;click&quot;, &#039;[component=&quot;post/flagUser&quot;]&#039;, function () {
+            const uid = getData($(this), &quot;data-uid&quot;);
+            require([&quot;flags&quot;], function (flags) {
+                flags.showFlagModal({
+                    type: &quot;user&quot;,
+                    id: uid,
+                });
+            });
+        });
+
+        postContainer.on(
+            &quot;click&quot;,
+            &#039;[component=&quot;post/flagResolve&quot;]&#039;,
+            function () {
+                const flagId = $(this).attr(&quot;data-flagId&quot;);
+                require([&quot;flags&quot;], function (flags) {
+                    flags.resolve(flagId);
+                });
+            }
+        );
+
+        postContainer.on(&quot;click&quot;, &#039;[component=&quot;post/edit&quot;]&#039;, function () {
+            const btn = $(this);
+
+            const timestamp = parseInt(getData(btn, &quot;data-timestamp&quot;), 10);
+            const postEditDuration = parseInt(
+                ajaxify.data.postEditDuration,
+                10
+            );
+
+            if (
+                checkDuration(
+                    postEditDuration,
+                    timestamp,
+                    &quot;post-edit-duration-expired&quot;
+                )
+            ) {
+                hooks.fire(&quot;action:composer.post.edit&quot;, {
+                    pid: getData(btn, &quot;data-pid&quot;),
+                });
+            }
+        });
+
+        if (
+            config.enablePostHistory &amp;&amp;
+            ajaxify.data.privileges[&quot;posts:history&quot;]
+        ) {
+            postContainer.on(
+                &quot;click&quot;,
+                &#039;[component=&quot;post/view-history&quot;], [component=&quot;post/edit-indicator&quot;]&#039;,
+                function () {
+                    const btn = $(this);
+                    require([&quot;forum/topic/diffs&quot;], function (diffs) {
+                        diffs.open(getData(btn, &quot;data-pid&quot;));
+                    });
+                }
+            );
+        }
+
+        postContainer.on(&quot;click&quot;, &#039;[component=&quot;post/delete&quot;]&#039;, function () {
+            const btn = $(this);
+            const timestamp = parseInt(getData(btn, &quot;data-timestamp&quot;), 10);
+            const postDeleteDuration = parseInt(
+                ajaxify.data.postDeleteDuration,
+                10
+            );
+            if (
+                checkDuration(
+                    postDeleteDuration,
+                    timestamp,
+                    &quot;post-delete-duration-expired&quot;
+                )
+            ) {
+                togglePostDelete($(this));
+            }
+        });
+
+        function checkDuration(duration, postTimestamp, languageKey) {
+            if (
+                !ajaxify.data.privileges.isAdminOrMod &amp;&amp;
+                duration &amp;&amp;
+                Date.now() - postTimestamp &gt; duration * 1000
+            ) {
+                const numDays = Math.floor(duration / 86400);
+                const numHours = Math.floor((duration % 86400) / 3600);
+                const numMinutes = Math.floor(((duration % 86400) % 3600) / 60);
+                const numSeconds = ((duration % 86400) % 3600) % 60;
+                let msg = &quot;[[error:&quot; + languageKey + &quot;, &quot; + duration + &quot;]]&quot;;
+                if (numDays) {
+                    if (numHours) {
+                        msg =
+                            &quot;[[error:&quot; +
+                            languageKey +
+                            &quot;-days-hours, &quot; +
+                            numDays +
+                            &quot;, &quot; +
+                            numHours +
+                            &quot;]]&quot;;
+                    } else {
+                        msg =
+                            &quot;[[error:&quot; +
+                            languageKey +
+                            &quot;-days, &quot; +
+                            numDays +
+                            &quot;]]&quot;;
+                    }
+                } else if (numHours) {
+                    if (numMinutes) {
+                        msg =
+                            &quot;[[error:&quot; +
+                            languageKey +
+                            &quot;-hours-minutes, &quot; +
+                            numHours +
+                            &quot;, &quot; +
+                            numMinutes +
+                            &quot;]]&quot;;
+                    } else {
+                        msg =
+                            &quot;[[error:&quot; +
+                            languageKey +
+                            &quot;-hours, &quot; +
+                            numHours +
+                            &quot;]]&quot;;
+                    }
+                } else if (numMinutes) {
+                    if (numSeconds) {
+                        msg =
+                            &quot;[[error:&quot; +
+                            languageKey +
+                            &quot;-minutes-seconds, &quot; +
+                            numMinutes +
+                            &quot;, &quot; +
+                            numSeconds +
+                            &quot;]]&quot;;
+                    } else {
+                        msg =
+                            &quot;[[error:&quot; +
+                            languageKey +
+                            &quot;-minutes, &quot; +
+                            numMinutes +
+                            &quot;]]&quot;;
+                    }
+                }
+                alerts.error(msg);
+                return false;
+            }
+            return true;
+        }
+
+        postContainer.on(&quot;click&quot;, &#039;[component=&quot;post/restore&quot;]&#039;, function () {
+            togglePostDelete($(this));
+        });
+
+        postContainer.on(&quot;click&quot;, &#039;[component=&quot;post/purge&quot;]&#039;, function () {
+            purgePost($(this));
+        });
+
+        postContainer.on(&quot;click&quot;, &#039;[component=&quot;post/move&quot;]&#039;, function () {
+            const btn = $(this);
+            require([&quot;forum/topic/move-post&quot;], function (movePost) {
+                movePost.init(btn.parents(&quot;[data-pid]&quot;));
+            });
+        });
+
+        postContainer.on(
+            &quot;click&quot;,
+            &#039;[component=&quot;post/change-owner&quot;]&#039;,
+            function () {
+                const btn = $(this);
+                require([&quot;forum/topic/change-owner&quot;], function (changeOwner) {
+                    changeOwner.init(btn.parents(&quot;[data-pid]&quot;));
+                });
+            }
+        );
+
+        postContainer.on(&quot;click&quot;, &#039;[component=&quot;post/ban-ip&quot;]&#039;, function () {
+            const ip = $(this).attr(&quot;data-ip&quot;);
+            socket.emit(&quot;blacklist.addRule&quot;, ip, function (err) {
+                if (err) {
+                    return alerts.error(err);
+                }
+                alerts.success(&quot;[[admin/manage/blacklist:ban-ip]]&quot;);
+            });
+        });
+
+        postContainer.on(&quot;click&quot;, &#039;[component=&quot;post/chat&quot;]&#039;, function () {
+            openChat($(this));
+        });
+    }
+
+    async function onReplyClicked(button, tid) {
+        const selectedNode = await getSelectedNode();
+
+        showStaleWarning(async function () {
+            console.log(&quot;This is a debug message2.&quot;);
+            let username = await getUserSlug(button);
+            if (
+                getData(button, &quot;data-uid&quot;) === &quot;0&quot; ||
+                !getData(button, &quot;data-userslug&quot;)
+            ) {
+                username = &quot;&quot;;
+            }
+
+            const toPid = button.is(&#039;[component=&quot;post/reply&quot;]&#039;)
+                ? getData(button, &quot;data-pid&quot;)
+                : null;
+            const isQuoteToPid =
+                !toPid || !selectedNode.pid || toPid === selectedNode.pid;
+
+            if (selectedNode.text &amp;&amp; isQuoteToPid) {
+                username = username || selectedNode.username;
+                hooks.fire(&quot;action:composer.addQuote&quot;, {
+                    tid: tid,
+                    pid: toPid,
+                    topicName: ajaxify.data.titleRaw,
+                    username: username,
+                    text: selectedNode.text,
+                    selectedPid: selectedNode.pid,
+                });
+            } else {
+                hooks.fire(&quot;action:composer.post.new&quot;, {
+                    tid: tid,
+                    pid: toPid,
+                    topicName: ajaxify.data.titleRaw,
+                    text: username
+                        ? username + &quot; &quot;
+                        : $(&#039;[component=&quot;topic/quickreply/text&quot;]&#039;).val() || &quot;&quot;,
+                });
+            }
+        });
+    }
+
+    async function onQuoteClicked(button, tid) {
+        const selectedNode = await getSelectedNode();
+
+        showStaleWarning(async function () {
+            const username = await getUserSlug(button);
+            const toPid = getData(button, &quot;data-pid&quot;);
+
+            function quote(text) {
+                hooks.fire(&quot;action:composer.addQuote&quot;, {
+                    tid: tid,
+                    pid: toPid,
+                    username: username,
+                    topicName: ajaxify.data.titleRaw,
+                    text: text,
+                });
+            }
+
+            if (selectedNode.text &amp;&amp; toPid &amp;&amp; toPid === selectedNode.pid) {
+                return quote(selectedNode.text);
+            }
+            socket.emit(&quot;posts.getRawPost&quot;, toPid, function (err, post) {
+                if (err) {
+                    return alerts.error(err);
+                }
+
+                quote(post);
+            });
+        });
+    }
+
+    /* async function onEndorseClicked(button, tid) { -- first simple
+        const selectedNode = await getSelectedNode();
+        console.log(&quot;This is a debug message.&quot;);
+        showStaleWarning(async function () {
+            const username = await getUserSlug(button);
+            const toPid = button.is(&#039;[component=&quot;post/endorse&quot;]&#039;)
+                ? getData(button, &quot;data-pid&quot;)
+                : null;
+
+            // Check if the user has instructor privileges
+            // const userHasInstructorPrivileges = checkUserPrivileges(); // Implement this function
+            const userHasInstructorPrivileges = true;
+
+            if (userHasInstructorPrivileges) {
+                bootbox.confirm(
+                    &quot;Are you sure you want to endorse this answer?&quot;,
+                    function (confirm) {
+                        if (confirm) {
+                            // Instructor confirmed the endorsement, perform the endorsement logic here
+                            const endorsedMessage =
+                                &quot;Instructor has endorsed this message&quot;;
+
+                            // Append the endorsed message below the body of the post/reply
+                            const post = button.parents(&quot;[data-pid]&quot;);
+                            if (post.length &gt; 0) {
+                                const endorsedMessage =
+                                    &quot;Instructor has endorsed this message&quot;;
+
+                                // Find the content element within the post
+                                const postContent = post.find(
+                                    &#039;[component=&quot;post/content&quot;]&#039;
+                                );
+
+                                if (postContent.length &gt; 0) {
+                                    postContent.append(
+                                        `&lt;div class=&quot;endorsement&quot;&gt;${endorsedMessage}&lt;/div&gt;`
+                                    );
+                                }
+                            }
+                        }
+                    }
+                );
+            }
+        });
+    } */
+
+    function toggleEndorsement(button) {
+        const isEndorsed = getData(button, &quot;data-is-endorsed&quot;);
+        const pid = button.is(&#039;[component=&quot;post/endorse&quot;]&#039;)
+            ? getData(button, &quot;data-pid&quot;)
+            : null;
+
+        // Define the allowed methods
+        const allowedMethods = [&quot;put&quot;, &quot;del&quot;];
+
+        // Check if the method is allowed
+        const method =
+            button.attr(&quot;data-is-endorsed&quot;) === &quot;false&quot; ? &quot;put&quot; : &quot;del&quot;;
+
+        if (!allowedMethods.includes(method)) {
+            console.error(`Invalid method: ${method}`);
+            return;
+        }
+
+        // Now you can call the method on the api object
+        api[method](`/posts/${pid}/endorse`, undefined, function (err) {
+            if (err) {
+                return alerts.error(err);
+            }
+            const type = method === &quot;put&quot; ? &quot;endorse&quot; : &quot;unendorse&quot;;
+
+            const endorsedMessage = &quot;Instructor has endorsed this message&quot;;
+            const unendorsedMessage = &quot;Instructor has unendorsed this message&quot;;
+
+            const post = button.parents(&quot;[data-pid]&quot;);
+
+            // Find the content element within the post
+            const postContent = post.find(&#039;[component=&quot;post/content&quot;]&#039;);
+
+            // Display or hide the endorsement message based on the action
+            if (method === &quot;put&quot;) {
+                if (postContent.length &gt; 0) {
+                    bootbox.confirm(
+                        &quot;Are you sure you want to endorse this answer?&quot;,
+                        function (confirm) {
+                            post.find(
+                                &#039;[component=&quot;post/is-endorsed&quot;]&#039;
+                            ).removeClass(&quot;hidden&quot;);
+                            // Update the button&#039;s text and data-is-endorsed attribute
+                            button.text(
+                                method === &quot;put&quot; ? &quot;Unendorse&quot; : &quot;Endorse&quot;
+                            );
+                            button.attr(
+                                &quot;data-is-endorsed&quot;,
+                                method === &quot;put&quot; ? &quot;true&quot; : &quot;false&quot;
+                            );
+                            /* postContent.append(
+                                `&lt;div class=&quot;endorsement&quot;&gt;${endorsedMessage}&lt;/div&gt;`
+                            ); */
+
+                            localStorage.setItem(
+                                `endorsementState-${pid}`,
+                                &quot;true&quot;
+                            );
+                        }
+                    );
+                }
+            } else {
+                bootbox.confirm(
+                    &quot;Are you sure you want to unendorse this answer?&quot;,
+                    function (confirm) {
+                        post.find(&#039;[component=&quot;post/is-endorsed&quot;]&#039;).addClass(
+                            &quot;hidden&quot;
+                        );
+                        // Update the button&#039;s text and data-is-endorsed attribute
+                        button.text(method === &quot;put&quot; ? &quot;Unendorse&quot; : &quot;Endorse&quot;);
+                        button.attr(
+                            &quot;data-is-endorsed&quot;,
+                            method === &quot;put&quot; ? &quot;true&quot; : &quot;false&quot;
+                        );
+                        /*  postContent.append(
+                            `&lt;div class=&quot;endorsement&quot;&gt;${unendorsedMessage}&lt;/div&gt;`
+                        ); */
+
+                        localStorage.setItem(
+                            `endorsementState-${pid}`,
+                            &quot;false&quot;
+                        );
+                    }
+                );
+            }
+
+            hooks.fire(`action:post.${type}`, { pid: pid });
+        });
+
+        console.log(
+            `API Request Method: ${method}, URL: /posts/${pid}/endorse`
+        );
+    }
+
+    /* function checkEndorsementState() {
+        const isEndorsed = localStorage.getItem(&quot;endorsementState&quot;) === &quot;true&quot;;
+        console.log(postContent);
+
+        // Display or hide the endorsement message based on the state
+        if (postContent &amp;&amp; postContent.length &gt; 0) {
+            if (isEndorsed) {
+                // Display the endorsement message
+                postContent.append(`endorsed`);
+            } else {
+                // Display the unendorsed message or clear the content
+                postContent.empty();
+                // or postContent.html(&quot;&quot;); to clear the content
+                postContent.append(`unendorsed`);
+            }
+        }
+    } */
+
+    // Inside a function that runs on page load
+    function onPageLoad() {
+        // Iterate through all posts on the page
+        $(&quot;[data-pid]&quot;).each(function () {
+            const postId = $(this).attr(&quot;data-pid&quot;);
+            const isEndorsed = localStorage.getItem(
+                `endorsementState-${postId}`
+            ); // Use a unique key for each post
+            console.log(postId);
+            console.log(isEndorsed);
+            const postContent = $(this).find(&#039;[component=&quot;post/content&quot;]&#039;);
+            const eMessage = $(this).find(&#039;[component=&quot;post/is-endorsed&quot;]&#039;);
+            if (isEndorsed === &quot;true&quot;) {
+                console.log(postId);
+                eMessage.removeClass(&quot;hidden&quot;);
+                postContent.append(&quot;endorsed &quot;);
+            } else {
+                // console.log(postId);
+                eMessage.addClass(&quot;hidden&quot;);
+                postContent.append(&quot;unendorsed &quot;);
+            }
+        });
+    }
+
+    $(window).on(&quot;action:ajaxify.end&quot;, function () {
+        onPageLoad();
+    });
+
+    // window.addEventListener(&quot;load&quot;, checkEndorsementState);
+
+    async function getSelectedNode() {
+        let selectedText = &quot;&quot;;
+        let selectedPid;
+        let username = &quot;&quot;;
+        const selection = window.getSelection
+            ? window.getSelection()
+            : document.selection.createRange();
+        const postContents = $(&#039;[component=&quot;post&quot;] [component=&quot;post/content&quot;]&#039;);
+        let content;
+        postContents.each(function (index, el) {
+            if (
+                selection &amp;&amp;
+                selection.containsNode &amp;&amp;
+                el &amp;&amp;
+                selection.containsNode(el, true)
+            ) {
+                content = el;
+            }
+        });
+
+        if (content) {
+            const bounds = document.createRange();
+            bounds.selectNodeContents(content);
+            const range = selection.getRangeAt(0).cloneRange();
+            if (range.compareBoundaryPoints(Range.START_TO_START, bounds) &lt; 0) {
+                range.setStart(bounds.startContainer, bounds.startOffset);
+            }
+            if (range.compareBoundaryPoints(Range.END_TO_END, bounds) &gt; 0) {
+                range.setEnd(bounds.endContainer, bounds.endOffset);
+            }
+            bounds.detach();
+            selectedText = range.toString();
+            const postEl = $(content).parents(&#039;[component=&quot;post&quot;]&#039;);
+            selectedPid = postEl.attr(&quot;data-pid&quot;);
+            username = await getUserSlug($(content));
+            range.detach();
+        }
+        return { text: selectedText, pid: selectedPid, username: username };
+    }
+
+    function bookmarkPost(button, pid) {
+        const method =
+            button.attr(&quot;data-bookmarked&quot;) === &quot;false&quot; ? &quot;put&quot; : &quot;del&quot;;
+
+        // Log the API request before making it
+        console.log(
+            `API Request Method: ${method}, URL: /posts/${pid}/bookmark`
+        );
+
+        api[method](`/posts/${pid}/bookmark`, undefined, function (err) {
+            if (err) {
+                return alerts.error(err);
+            }
+            const type = method === &quot;put&quot; ? &quot;bookmark&quot; : &quot;unbookmark&quot;;
+            hooks.fire(`action:post.${type}`, { pid: pid });
+        });
+        return false;
+    }
+
+    function getData(button, data) {
+        return button.parents(&quot;[data-pid]&quot;).attr(data);
+    }
+
+    function getUserSlug(button) {
+        return new Promise((resolve) =&gt; {
+            let slug = &quot;&quot;;
+            if (button.attr(&quot;component&quot;) === &quot;topic/reply&quot;) {
+                resolve(slug);
+                return;
+            }
+            const post = button.parents(&quot;[data-pid]&quot;);
+            if (post.length) {
+                require([&quot;slugify&quot;], function (slugify) {
+                    slug = slugify(post.attr(&quot;data-username&quot;), true);
+                    if (!slug) {
+                        if (post.attr(&quot;data-uid&quot;) !== &quot;0&quot;) {
+                            slug = &quot;[[global:former_user]]&quot;;
+                        } else {
+                            slug = &quot;[[global:guest]]&quot;;
+                        }
+                    }
+                    if (
+                        slug &amp;&amp;
+                        slug !== &quot;[[global:former_user]]&quot; &amp;&amp;
+                        slug !== &quot;[[global:guest]]&quot;
+                    ) {
+                        slug = &quot;@&quot; + slug;
+                    }
+                    resolve(slug);
+                });
+                return;
+            }
+
+            resolve(slug);
+        });
+    }
+
+    function togglePostDelete(button) {
+        const pid = getData(button, &quot;data-pid&quot;);
+        const postEl = components.get(&quot;post&quot;, &quot;pid&quot;, pid);
+        const action = !postEl.hasClass(&quot;deleted&quot;) ? &quot;delete&quot; : &quot;restore&quot;;
+
+        postAction(action, pid);
+    }
+
+    function purgePost(button) {
+        postAction(&quot;purge&quot;, getData(button, &quot;data-pid&quot;));
+    }
+
+    async function postAction(action, pid) {
+        ({ action } = await hooks.fire(`static:post.${action}`, {
+            action,
+            pid,
+        }));
+        if (!action) {
+            return;
+        }
+
+        bootbox.confirm(
+            &quot;[[topic:post_&quot; + action + &quot;_confirm]]&quot;,
+            function (confirm) {
+                if (!confirm) {
+                    return;
+                }
+
+                const route = action === &quot;purge&quot; ? &quot;&quot; : &quot;/state&quot;;
+                const method = action === &quot;restore&quot; ? &quot;put&quot; : &quot;del&quot;;
+                api[method](`/posts/${pid}${route}`).catch(alerts.error);
+            }
+        );
+    }
+
+    function openChat(button) {
+        const post = button.parents(&quot;[data-pid]&quot;);
+        require([&quot;chat&quot;], function (chat) {
+            chat.newChat(post.attr(&quot;data-uid&quot;));
+        });
+        button.parents(&quot;.btn-group&quot;).find(&quot;.dropdown-toggle&quot;).click();
+        return false;
+    }
+
+    function showStaleWarning(callback) {
+        const staleThreshold = Math.min(
+            Date.now() - 1000 * 60 * 60 * 24 * ajaxify.data.topicStaleDays,
+            8640000000000000
+        );
+        if (staleReplyAnyway || ajaxify.data.lastposttime &gt;= staleThreshold) {
+            return callback();
+        }
+
+        const warning = bootbox.dialog({
+            title: &quot;[[topic:stale.title]]&quot;,
+            message: &quot;[[topic:stale.warning]]&quot;,
+            buttons: {
+                reply: {
+                    label: &quot;[[topic:stale.reply_anyway]]&quot;,
+                    className: &quot;btn-link&quot;,
+                    callback: function () {
+                        staleReplyAnyway = true;
+                        callback();
+                    },
+                },
+                create: {
+                    label: &quot;[[topic:stale.create]]&quot;,
+                    className: &quot;btn-primary&quot;,
+                    callback: function () {
+                        translator.translate(
+                            &quot;[[topic:link_back, &quot; +
+                                ajaxify.data.title +
+                                &quot;, &quot; +
+                                config.relative_path +
+                                &quot;/topic/&quot; +
+                                ajaxify.data.slug +
+                                &quot;]]&quot;,
+                            function (body) {
+                                hooks.fire(&quot;action:composer.topic.new&quot;, {
+                                    cid: ajaxify.data.cid,
+                                    body: body,
+                                    fromStaleTopic: true,
+                                });
+                            }
+                        );
+                    },
+                },
+            },
+        });
+
+        warning.modal();
+    }
+
+    const selectionChangeFn = utils.debounce(selectionChange, 100);
+
+    function handleSelectionTooltip() {
+        if (!ajaxify.data.privileges[&quot;topics:reply&quot;]) {
+            return;
+        }
+
+        hooks.onPage(&quot;action:posts.loaded&quot;, delayedTooltip);
+
+        $(document)
+            .off(&quot;selectionchange&quot;, selectionChangeFn)
+            .on(&quot;selectionchange&quot;, selectionChangeFn);
+    }
+
+    function selectionChange() {
+        const selectionEmpty = window.getSelection().toString() === &quot;&quot;;
+        if (selectionEmpty) {
+            $(&#039;[component=&quot;selection/tooltip&quot;]&#039;).addClass(&quot;hidden&quot;);
+        } else {
+            delayedTooltip();
+        }
+    }
+
+    async function delayedTooltip() {
+        let selectionTooltip = $(&#039;[component=&quot;selection/tooltip&quot;]&#039;);
+        selectionTooltip.addClass(&quot;hidden&quot;);
+        if (selectionTooltip.attr(&quot;data-ajaxify&quot;) === &quot;1&quot;) {
+            selectionTooltip.remove();
+            return;
+        }
+
+        const selection = window.getSelection();
+        if (
+            selection.focusNode &amp;&amp;
+            selection.type === &quot;Range&quot; &amp;&amp;
+            ajaxify.data.template.topic
+        ) {
+            const focusNode = $(selection.focusNode);
+            const anchorNode = $(selection.anchorNode);
+            const firstPid = anchorNode.parents(&quot;[data-pid]&quot;).attr(&quot;data-pid&quot;);
+            const lastPid = focusNode.parents(&quot;[data-pid]&quot;).attr(&quot;data-pid&quot;);
+            if (
+                firstPid !== lastPid ||
+                !focusNode.parents(&#039;[component=&quot;post/content&quot;]&#039;).length ||
+                !anchorNode.parents(&#039;[component=&quot;post/content&quot;]&#039;).length
+            ) {
+                return;
+            }
+            const postEl = focusNode.parents(&quot;[data-pid]&quot;);
+            const selectionRange = selection.getRangeAt(0);
+            if (!postEl.length || selectionRange.collapsed) {
+                return;
+            }
+            const rects = selectionRange.getClientRects();
+            const lastRect = rects[rects.length - 1];
+
+            if (!selectionTooltip.length) {
+                selectionTooltip = await app.parseAndTranslate(
+                    &quot;partials/topic/selection-tooltip&quot;,
+                    ajaxify.data
+                );
+                selectionTooltip.addClass(&quot;hidden&quot;).appendTo(&quot;body&quot;);
+            }
+            selectionTooltip
+                .off(&quot;click&quot;)
+                .on(
+                    &quot;click&quot;,
+                    &#039;[component=&quot;selection/tooltip/quote&quot;]&#039;,
+                    function () {
+                        selectionTooltip.addClass(&quot;hidden&quot;);
+                        onQuoteClicked(
+                            postEl.find(&#039;[component=&quot;post/quote&quot;]&#039;),
+                            ajaxify.data.tid
+                        );
+                    }
+                );
+            selectionTooltip.removeClass(&quot;hidden&quot;);
+            $(window).one(&quot;action:ajaxify.start&quot;, function () {
+                selectionTooltip.attr(&quot;data-ajaxify&quot;, 1).addClass(&quot;hidden&quot;);
+                $(document).off(&quot;selectionchange&quot;, selectionChangeFn);
+            });
+            const tooltipWidth = selectionTooltip.outerWidth(true);
+            selectionTooltip.css({
+                top: lastRect.bottom + $(window).scrollTop(),
+                left:
+                    tooltipWidth &gt; lastRect.width
+                        ? lastRect.left
+                        : lastRect.left + lastRect.width - tooltipWidth,
+            });
+        }
+    }
+
+    return PostTools;
+});</textarea>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <p>.</p>
+  </div>
+</footer>
+
+<script type="text/html" id="complexity-popover-template">
+  <div class="complexity-notice">
+    Complexity : {{ cyclomatic }} <br>
+    Length : {{ halstead.length }} <br>
+    Difficulty : {{ halstead.difficulty.toFixed(2) }} <br>
+    Est # bugs : {{ halstead.bugs.toFixed(2) }}<br>
+  </div>
+</script>
+
+<script type="text/javascript" src="../../assets/scripts/bundles/core-bundle.js"></script>
+<script type="text/javascript" src="../../assets/scripts/bundles/codemirror.js"></script>
+<script type="text/javascript" src="../../assets/scripts/codemirror.markpopovertext.js"></script>
+<script type="text/javascript" src="report.js"></script>
+<script type="text/javascript" src="report.history.js"></script>
+<script type="text/javascript" src="../../assets/scripts/plato-file.js"></script>
+</body>
+</html>
