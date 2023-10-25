@@ -48,7 +48,7 @@ topicsAPI.create = async function (caller, data) {
             await privileges.categories.can(
                 "topics:schedule",
                 data.cid,
-                caller.uid
+                caller.uid,
             )
         ) {
             payload.timestamp = parseInt(data.timestamp, 10);
@@ -99,7 +99,7 @@ topicsAPI.reply = async function (caller, data) {
     const postObj = await posts.getPostSummaryByPids(
         [postData.pid],
         caller.uid,
-        {}
+        {},
     );
 
     const result = {

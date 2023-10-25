@@ -70,11 +70,11 @@ exports.doTopicAction = async function (action, event, caller, { tids }) {
             const notifyUids = await privileges.categories.filterUids(
                 "topics:read",
                 data.cid,
-                uids
+                uids,
             );
             socketHelpers.emitToUids(event, data, notifyUids);
             await logTopicAction(action, caller, tid, title);
-        })
+        }),
     );
 };
 
@@ -98,7 +98,7 @@ exports.postCommand = async function (
     command,
     eventName,
     notification,
-    data
+    data,
 ) {
     if (!caller.uid) {
         throw new Error("[[error:not-logged-in]]");
@@ -141,7 +141,7 @@ exports.postCommand = async function (
         command,
         eventName,
         notification,
-        filteredData.data
+        filteredData.data,
     );
 };
 
@@ -159,7 +159,7 @@ async function executeCommand(caller, command, eventName, notification, data) {
             data.pid,
             caller.uid,
             command,
-            notification
+            notification,
         );
     } else if (result && command === "unvote") {
         socketHelpers.rescindUpvoteNotification(data.pid, caller.uid);

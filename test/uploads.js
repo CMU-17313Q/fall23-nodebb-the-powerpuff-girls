@@ -30,7 +30,7 @@ const emptyUploadsFolder = async () => {
     await Promise.all(
         files.map(async (filename) => {
             await file.delete(`${nconf.get("upload_path")}/files/${filename}`);
-        })
+        }),
     );
 };
 
@@ -52,25 +52,25 @@ describe("Upload Controllers", () => {
                             description:
                                 "Test category created by testing script",
                         },
-                        next
+                        next,
                     );
                 },
                 adminUid: function (next) {
                     user.create(
                         { username: "admin", password: "barbar" },
-                        next
+                        next,
                     );
                 },
                 regularUid: function (next) {
                     user.create(
                         { username: "regular", password: "zugzug" },
-                        next
+                        next,
                     );
                 },
                 maliciousUid: function (next) {
                     user.create(
                         { username: "malicioususer", password: "herpderp" },
-                        next
+                        next,
                     );
                 },
             },
@@ -97,9 +97,9 @@ describe("Upload Controllers", () => {
                         tid = result.topicData.tid;
                         pid = result.postData.pid;
                         groups.join("administrators", adminUid, done);
-                    }
+                    },
                 );
-            }
+            },
         );
     });
 
@@ -110,11 +110,11 @@ describe("Upload Controllers", () => {
         before(async () => {
             ({ jar, csrf_token } = await helpers.loginUser(
                 "malicioususer",
-                "herpderp"
+                "herpderp",
             ));
             await privileges.global.give(
                 ["groups:upload:post:file"],
-                "registered-users"
+                "registered-users",
             );
         });
 
@@ -140,7 +140,7 @@ describe("Upload Controllers", () => {
                                 assert.strictEqual(res.statusCode, 500);
                                 assert.strictEqual(
                                     body.error,
-                                    "[[error:upload-ratelimit-reached]]"
+                                    "[[error:upload-ratelimit-reached]]",
                                 );
                             } else {
                                 assert.ifError(err);
@@ -149,21 +149,21 @@ describe("Upload Controllers", () => {
                                     body &&
                                         body.status &&
                                         body.response &&
-                                        body.response.images
+                                        body.response.images,
                                 );
                                 assert(Array.isArray(body.response.images));
                                 assert(body.response.images[0].url);
                             }
 
                             next(err);
-                        }
+                        },
                     );
                 },
                 (err) => {
                     meta.config.allowedFileExtensions = oldValue;
                     assert.ifError(err);
                     done();
-                }
+                },
             );
         });
     });
@@ -176,11 +176,11 @@ describe("Upload Controllers", () => {
             meta.config.uploadRateLimitThreshold = 1000;
             ({ jar, csrf_token } = await helpers.loginUser(
                 "regular",
-                "zugzug"
+                "zugzug",
             ));
             await privileges.global.give(
                 ["groups:upload:post:file"],
-                "registered-users"
+                "registered-users",
             );
         });
 
@@ -198,12 +198,12 @@ describe("Upload Controllers", () => {
                         body &&
                             body.status &&
                             body.response &&
-                            body.response.images
+                            body.response.images,
                     );
                     assert(Array.isArray(body.response.images));
                     assert(body.response.images[0].url);
                     done();
-                }
+                },
             );
         });
 
@@ -221,7 +221,7 @@ describe("Upload Controllers", () => {
                         body &&
                             body.status &&
                             body.response &&
-                            body.response.images
+                            body.response.images,
                     );
                     assert(Array.isArray(body.response.images));
                     assert(body.response.images[0].url);
@@ -229,7 +229,7 @@ describe("Upload Controllers", () => {
                         `${
                             nconf.get("relative_path") + nconf.get("upload_url")
                         }/`,
-                        ""
+                        "",
                     );
                     socketUser.deleteUpload(
                         { uid: regularUid },
@@ -244,11 +244,11 @@ describe("Upload Controllers", () => {
                                     assert.ifError(err);
                                     assert.equal(uploads.includes(name), false);
                                     done();
-                                }
+                                },
                             );
-                        }
+                        },
                     );
-                }
+                },
             );
         });
 
@@ -259,7 +259,7 @@ describe("Upload Controllers", () => {
                 (err) => {
                     assert.equal(err.message, "[[error:invalid-path]]");
                     done();
-                }
+                },
             );
         });
 
@@ -270,7 +270,7 @@ describe("Upload Controllers", () => {
                 (err) => {
                     assert.equal(err.message, "[[error:invalid-path]]");
                     done();
-                }
+                },
             );
         });
 
@@ -291,19 +291,19 @@ describe("Upload Controllers", () => {
                         body &&
                             body.status &&
                             body.response &&
-                            body.response.images
+                            body.response.images,
                     );
                     assert(Array.isArray(body.response.images));
                     assert(body.response.images[0].url);
                     assert(
                         body.response.images[0].url.match(
-                            /\/assets\/uploads\/files\/\d+-test-resized\.png/
-                        )
+                            /\/assets\/uploads\/files\/\d+-test-resized\.png/,
+                        ),
                     );
                     meta.config.resizeImageWidth = oldValue;
                     meta.config.resizeImageWidthThreshold = 1520;
                     done();
-                }
+                },
             );
         });
 
@@ -324,12 +324,12 @@ describe("Upload Controllers", () => {
                         body &&
                             body.status &&
                             body.response &&
-                            body.response.images
+                            body.response.images,
                     );
                     assert(Array.isArray(body.response.images));
                     assert(body.response.images[0].url);
                     done();
-                }
+                },
             );
         });
 
@@ -346,10 +346,10 @@ describe("Upload Controllers", () => {
                     assert(body && body.status && body.status.message);
                     assert.strictEqual(
                         body.status.message,
-                        "Image dimensions are too big"
+                        "Image dimensions are too big",
                     );
                     done();
-                }
+                },
             );
         });
 
@@ -366,10 +366,10 @@ describe("Upload Controllers", () => {
                     assert(body && body.status && body.status.message);
                     assert.strictEqual(
                         body.status.message,
-                        "Input file contains unsupported image format"
+                        "Input file contains unsupported image format",
                     );
                     done();
-                }
+                },
             );
         });
 
@@ -379,10 +379,10 @@ describe("Upload Controllers", () => {
                 (err) => {
                     assert.strictEqual(
                         err.message,
-                        "Input file contains unsupported image format"
+                        "Input file contains unsupported image format",
                     );
                     done();
-                }
+                },
             );
         });
 
@@ -392,10 +392,10 @@ describe("Upload Controllers", () => {
                 (err) => {
                     assert.strictEqual(
                         err.message,
-                        "Input file contains unsupported image format"
+                        "Input file contains unsupported image format",
                     );
                     done();
-                }
+                },
             );
         });
 
@@ -405,10 +405,10 @@ describe("Upload Controllers", () => {
                 (err) => {
                     assert.strictEqual(
                         err.message,
-                        "Input file contains unsupported image format"
+                        "Input file contains unsupported image format",
                     );
                     done();
-                }
+                },
             );
         });
 
@@ -418,7 +418,7 @@ describe("Upload Controllers", () => {
                 (err) => {
                     assert(err.message.startsWith("Input file is missing"));
                     done();
-                }
+                },
             );
         });
 
@@ -429,7 +429,7 @@ describe("Upload Controllers", () => {
                 (err) => {
                     assert.equal(err.message, "[[error:invalid-data]]");
                     done();
-                }
+                },
             );
         });
 
@@ -444,7 +444,7 @@ describe("Upload Controllers", () => {
                 (err) => {
                     assert.equal(err.message, "[[error:invalid-image]]");
                     done();
-                }
+                },
             );
         });
 
@@ -459,7 +459,7 @@ describe("Upload Controllers", () => {
                 (err) => {
                     assert.equal(err.message, "[[error:invalid-image]]");
                     done();
-                }
+                },
             );
         });
 
@@ -470,7 +470,7 @@ describe("Upload Controllers", () => {
                 (err) => {
                     assert.equal(err.message, "[[error:invalid-data]]");
                     done();
-                }
+                },
             );
         });
 
@@ -485,7 +485,7 @@ describe("Upload Controllers", () => {
                 (err) => {
                     assert.equal(err.message, "[[error:invalid-image]]");
                     done();
-                }
+                },
             );
         });
 
@@ -500,7 +500,7 @@ describe("Upload Controllers", () => {
                 (err) => {
                     assert.equal(err.message, "[[error:invalid-image]]");
                     done();
-                }
+                },
             );
         });
 
@@ -514,7 +514,7 @@ describe("Upload Controllers", () => {
                     function (next) {
                         user.create(
                             { username: "uploader", password: "barbar" },
-                            next
+                            next,
                         );
                     },
                     function (_uid, next) {
@@ -528,7 +528,7 @@ describe("Upload Controllers", () => {
                             {},
                             data.jar,
                             data.csrf_token,
-                            next
+                            next,
                         );
                     },
                     function (res, body, next) {
@@ -536,7 +536,7 @@ describe("Upload Controllers", () => {
                             body &&
                                 body.status &&
                                 body.response &&
-                                body.response.images
+                                body.response.images,
                         );
                         assert(Array.isArray(body.response.images));
                         assert(body.response.images[0].url);
@@ -547,7 +547,7 @@ describe("Upload Controllers", () => {
                     function (userData, next) {
                         const filePath = path.join(
                             nconf.get("upload_path"),
-                            url.replace("/assets/uploads", "")
+                            url.replace("/assets/uploads", ""),
                         );
                         file.exists(filePath, next);
                     },
@@ -556,7 +556,7 @@ describe("Upload Controllers", () => {
                         done();
                     },
                 ],
-                done
+                done,
             );
         });
 
@@ -590,11 +590,11 @@ describe("Upload Controllers", () => {
                     assert.equal(
                         body[0].url,
                         `${nconf.get(
-                            "relative_path"
-                        )}/assets/uploads/system/site-logo.png`
+                            "relative_path",
+                        )}/assets/uploads/system/site-logo.png`,
                     );
                     done();
-                }
+                },
             );
         });
 
@@ -609,10 +609,10 @@ describe("Upload Controllers", () => {
                     assert.ifError(err);
                     assert.equal(
                         body.error,
-                        "[[error:invalid-image-type, image/png&#44; image/jpeg&#44; image/pjpeg&#44; image/jpg&#44; image/gif&#44; image/svg+xml]]"
+                        "[[error:invalid-image-type, image/png&#44; image/jpeg&#44; image/pjpeg&#44; image/jpg&#44; image/gif&#44; image/svg+xml]]",
                     );
                     done();
-                }
+                },
             );
         });
 
@@ -627,7 +627,7 @@ describe("Upload Controllers", () => {
                     assert.ifError(err);
                     assert.equal(body.error, "[[error:invalid-json]]");
                     done();
-                }
+                },
             );
         });
 
@@ -645,11 +645,11 @@ describe("Upload Controllers", () => {
                     assert.equal(
                         body[0].url,
                         `${nconf.get(
-                            "relative_path"
-                        )}/assets/uploads/category/category-1.png`
+                            "relative_path",
+                        )}/assets/uploads/category/category-1.png`,
                     );
                     done();
-                }
+                },
             );
         });
 
@@ -666,11 +666,11 @@ describe("Upload Controllers", () => {
                     assert.equal(
                         body[0].url,
                         `${nconf.get(
-                            "relative_path"
-                        )}/assets/uploads/system/avatar-default.png`
+                            "relative_path",
+                        )}/assets/uploads/system/avatar-default.png`,
                     );
                     done();
-                }
+                },
             );
         });
 
@@ -687,11 +687,11 @@ describe("Upload Controllers", () => {
                     assert.equal(
                         body[0].url,
                         `${nconf.get(
-                            "relative_path"
-                        )}/assets/uploads/system/og-image.png`
+                            "relative_path",
+                        )}/assets/uploads/system/og-image.png`,
                     );
                     done();
-                }
+                },
             );
         });
 
@@ -708,10 +708,10 @@ describe("Upload Controllers", () => {
                     assert(Array.isArray(body));
                     assert.equal(
                         body[0].url,
-                        "/assets/uploads/system/favicon.ico"
+                        "/assets/uploads/system/favicon.ico",
                     );
                     done();
-                }
+                },
             );
         });
 
@@ -737,9 +737,9 @@ describe("Upload Controllers", () => {
                             assert.equal(res.statusCode, 200);
                             assert(body);
                             done();
-                        }
+                        },
                     );
-                }
+                },
             );
         });
 
@@ -760,19 +760,19 @@ describe("Upload Controllers", () => {
                     assert(Array.isArray(body));
                     assert.equal(
                         body[0].url,
-                        "/assets/uploads/system/test.png"
+                        "/assets/uploads/system/test.png",
                     );
                     assert(
                         file.existsSync(
                             path.join(
                                 nconf.get("upload_path"),
                                 "system",
-                                "test.png"
-                            )
-                        )
+                                "test.png",
+                            ),
+                        ),
                     );
                     done();
-                }
+                },
             );
         });
 
@@ -792,7 +792,7 @@ describe("Upload Controllers", () => {
                     assert.equal(res.statusCode, 500);
                     assert.strictEqual(body.error, "[[error:invalid-path]]");
                     done();
-                }
+                },
             );
         });
 
@@ -802,13 +802,13 @@ describe("Upload Controllers", () => {
                     "",
                     "myfolder",
                     jar,
-                    csrf_token
+                    csrf_token,
                 );
                 assert.strictEqual(res.statusCode, 200);
                 assert(
                     file.existsSync(
-                        path.join(nconf.get("upload_path"), "myfolder")
-                    )
+                        path.join(nconf.get("upload_path"), "myfolder"),
+                    ),
                 );
             });
 
@@ -817,7 +817,7 @@ describe("Upload Controllers", () => {
                     "",
                     "myfolder",
                     jar,
-                    csrf_token
+                    csrf_token,
                 );
                 assert.strictEqual(res.statusCode, 403);
                 assert.deepStrictEqual(res.body.status, {
@@ -831,7 +831,7 @@ describe("Upload Controllers", () => {
                     "",
                     "hisfolder",
                     regularJar,
-                    regular_csrf_token
+                    regular_csrf_token,
                 );
                 assert.strictEqual(res.statusCode, 403);
                 assert.deepStrictEqual(res.body.status, {
@@ -845,7 +845,7 @@ describe("Upload Controllers", () => {
                     "../traversing",
                     "unexpectedfolder",
                     jar,
-                    csrf_token
+                    csrf_token,
                 );
                 assert.strictEqual(res.statusCode, 403);
                 assert.deepStrictEqual(res.body.status, {
@@ -859,7 +859,7 @@ describe("Upload Controllers", () => {
                     "/myfolder",
                     "../another folder",
                     jar,
-                    csrf_token
+                    csrf_token,
                 );
                 assert.strictEqual(res.statusCode, 200);
                 const slugifiedName = "another-folder";
@@ -868,9 +868,9 @@ describe("Upload Controllers", () => {
                         path.join(
                             nconf.get("upload_path"),
                             "myfolder",
-                            slugifiedName
-                        )
-                    )
+                            slugifiedName,
+                        ),
+                    ),
                 );
             });
 
@@ -888,7 +888,7 @@ describe("Upload Controllers", () => {
                         },
                         simple: false,
                         resolveWithFullResponse: true,
-                    }
+                    },
                 );
                 assert.strictEqual(res.statusCode, 403);
                 assert.deepStrictEqual(res.body.status, {
@@ -906,14 +906,14 @@ describe("Upload Controllers", () => {
             before(async () => {
                 const { jar, csrf_token } = await helpers.loginUser(
                     "regular",
-                    "zugzug"
+                    "zugzug",
                 );
                 await helpers.uploadFile(
                     `${nconf.get("url")}/api/post/upload`,
                     path.join(__dirname, "../test/files/test.png"),
                     {},
                     jar,
-                    csrf_token
+                    csrf_token,
                 );
             });
 
@@ -936,19 +936,19 @@ describe("Upload Controllers", () => {
             before(async () => {
                 const { jar, csrf_token } = await helpers.loginUser(
                     "regular",
-                    "zugzug"
+                    "zugzug",
                 );
                 await helpers.uploadFile(
                     `${nconf.get("url")}/api/post/upload`,
                     path.join(__dirname, "../test/files/test.png"),
                     {},
                     jar,
-                    csrf_token
+                    csrf_token,
                 );
 
                 // modify all files in uploads folder to be 30 days old
                 const files = await fs.readdir(
-                    `${nconf.get("upload_path")}/files`
+                    `${nconf.get("upload_path")}/files`,
                 );
                 const p30d = (Date.now() - 1000 * 60 * 60 * 24 * 30) / 1000;
                 await Promise.all(
@@ -956,9 +956,9 @@ describe("Upload Controllers", () => {
                         await fs.utimes(
                             `${nconf.get("upload_path")}/files/${filename}`,
                             p30d,
-                            p30d
+                            p30d,
                         );
-                    })
+                    }),
                 );
 
                 _orphanExpiryDays = meta.config.orphanExpiryDays;

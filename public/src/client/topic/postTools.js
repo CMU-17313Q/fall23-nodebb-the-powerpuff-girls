@@ -24,7 +24,7 @@ define("forum/topic/postTools", [
     api,
     bootbox,
     alerts,
-    hooks
+    hooks,
 ) {
     const PostTools = {};
 
@@ -71,7 +71,7 @@ define("forum/topic/postTools", [
 
                         const html = await app.parseAndTranslate(
                             "partials/topic/post-menu-list",
-                            data
+                            data,
                         );
                         const clipboard = require("clipboard");
 
@@ -82,9 +82,9 @@ define("forum/topic/postTools", [
                         hooks.fire("action:post.tools.load", {
                             element: dropdownMenu,
                         });
-                    }
+                    },
                 );
-            }
+            },
         );
     }
 
@@ -93,7 +93,7 @@ define("forum/topic/postTools", [
 
         postEl
             .find(
-                '[component="post/quote"], [component="post/bookmark"], [component="post/reply"], [component="post/flag"], [component="user/chat"], [component="post/endorse"]'
+                '[component="post/quote"], [component="post/bookmark"], [component="post/reply"], [component="post/flag"], [component="user/chat"], [component="post/endorse"]',
             )
             .toggleClass("hidden", isDeleted);
 
@@ -173,9 +173,9 @@ define("forum/topic/postTools", [
                             cid: ajaxify.data.cid,
                             body: body,
                         });
-                    }
+                    },
                 );
-            }
+            },
         );
 
         postContainer.on("click", '[component="post/bookmark"]', function () {
@@ -222,7 +222,7 @@ define("forum/topic/postTools", [
                 require(["flags"], function (flags) {
                     flags.resolve(flagId);
                 });
-            }
+            },
         );
 
         postContainer.on("click", '[component="post/edit"]', function () {
@@ -231,14 +231,14 @@ define("forum/topic/postTools", [
             const timestamp = parseInt(getData(btn, "data-timestamp"), 10);
             const postEditDuration = parseInt(
                 ajaxify.data.postEditDuration,
-                10
+                10,
             );
 
             if (
                 checkDuration(
                     postEditDuration,
                     timestamp,
-                    "post-edit-duration-expired"
+                    "post-edit-duration-expired",
                 )
             ) {
                 hooks.fire("action:composer.post.edit", {
@@ -259,7 +259,7 @@ define("forum/topic/postTools", [
                     require(["forum/topic/diffs"], function (diffs) {
                         diffs.open(getData(btn, "data-pid"));
                     });
-                }
+                },
             );
         }
 
@@ -268,13 +268,13 @@ define("forum/topic/postTools", [
             const timestamp = parseInt(getData(btn, "data-timestamp"), 10);
             const postDeleteDuration = parseInt(
                 ajaxify.data.postDeleteDuration,
-                10
+                10,
             );
             if (
                 checkDuration(
                     postDeleteDuration,
                     timestamp,
-                    "post-delete-duration-expired"
+                    "post-delete-duration-expired",
                 )
             ) {
                 togglePostDelete($(this));
@@ -376,7 +376,7 @@ define("forum/topic/postTools", [
                 require(["forum/topic/change-owner"], function (changeOwner) {
                     changeOwner.init(btn.parents("[data-pid]"));
                 });
-            }
+            },
         );
 
         postContainer.on("click", '[component="post/ban-ip"]', function () {
@@ -552,15 +552,15 @@ define("forum/topic/postTools", [
                         "Are you sure you want to endorse this answer?",
                         function (confirm) {
                             post.find(
-                                '[component="post/is-endorsed"]'
+                                '[component="post/is-endorsed"]',
                             ).removeClass("hidden");
                             // Update the button's text and data-is-endorsed attribute
                             button.text(
-                                method === "put" ? "Unendorse" : "Endorse"
+                                method === "put" ? "Unendorse" : "Endorse",
                             );
                             button.attr(
                                 "data-is-endorsed",
-                                method === "put" ? "true" : "false"
+                                method === "put" ? "true" : "false",
                             );
                             /* postContent.append(
                                 `<div class="endorsement">${endorsedMessage}</div>`
@@ -568,9 +568,9 @@ define("forum/topic/postTools", [
 
                             localStorage.setItem(
                                 `endorsementState-${pid}`,
-                                "true"
+                                "true",
                             );
-                        }
+                        },
                     );
                 }
             } else {
@@ -578,13 +578,13 @@ define("forum/topic/postTools", [
                     "Are you sure you want to unendorse this answer?",
                     function (confirm) {
                         post.find('[component="post/is-endorsed"]').addClass(
-                            "hidden"
+                            "hidden",
                         );
                         // Update the button's text and data-is-endorsed attribute
                         button.text(method === "put" ? "Unendorse" : "Endorse");
                         button.attr(
                             "data-is-endorsed",
-                            method === "put" ? "true" : "false"
+                            method === "put" ? "true" : "false",
                         );
                         /*  postContent.append(
                             `<div class="endorsement">${unendorsedMessage}</div>`
@@ -592,9 +592,9 @@ define("forum/topic/postTools", [
 
                         localStorage.setItem(
                             `endorsementState-${pid}`,
-                            "false"
+                            "false",
                         );
-                    }
+                    },
                 );
             }
 
@@ -602,7 +602,7 @@ define("forum/topic/postTools", [
         });
 
         console.log(
-            `API Request Method: ${method}, URL: /posts/${pid}/endorse`
+            `API Request Method: ${method}, URL: /posts/${pid}/endorse`,
         );
     }
 
@@ -630,7 +630,7 @@ define("forum/topic/postTools", [
         $("[data-pid]").each(function () {
             const postId = $(this).attr("data-pid");
             const isEndorsed = localStorage.getItem(
-                `endorsementState-${postId}`
+                `endorsementState-${postId}`,
             ); // Use a unique key for each post
             console.log(postId);
             console.log(isEndorsed);
@@ -700,7 +700,7 @@ define("forum/topic/postTools", [
 
         // Log the API request before making it
         console.log(
-            `API Request Method: ${method}, URL: /posts/${pid}/bookmark`
+            `API Request Method: ${method}, URL: /posts/${pid}/bookmark`,
         );
 
         api[method](`/posts/${pid}/bookmark`, undefined, function (err) {
@@ -782,7 +782,7 @@ define("forum/topic/postTools", [
                 const route = action === "purge" ? "" : "/state";
                 const method = action === "restore" ? "put" : "del";
                 api[method](`/posts/${pid}${route}`).catch(alerts.error);
-            }
+            },
         );
     }
 
@@ -798,7 +798,7 @@ define("forum/topic/postTools", [
     function showStaleWarning(callback) {
         const staleThreshold = Math.min(
             Date.now() - 1000 * 60 * 60 * 24 * ajaxify.data.topicStaleDays,
-            8640000000000000
+            8640000000000000,
         );
         if (staleReplyAnyway || ajaxify.data.lastposttime >= staleThreshold) {
             return callback();
@@ -834,7 +834,7 @@ define("forum/topic/postTools", [
                                     body: body,
                                     fromStaleTopic: true,
                                 });
-                            }
+                            },
                         );
                     },
                 },
@@ -903,7 +903,7 @@ define("forum/topic/postTools", [
             if (!selectionTooltip.length) {
                 selectionTooltip = await app.parseAndTranslate(
                     "partials/topic/selection-tooltip",
-                    ajaxify.data
+                    ajaxify.data,
                 );
                 selectionTooltip.addClass("hidden").appendTo("body");
             }
@@ -916,9 +916,9 @@ define("forum/topic/postTools", [
                         selectionTooltip.addClass("hidden");
                         onQuoteClicked(
                             postEl.find('[component="post/quote"]'),
-                            ajaxify.data.tid
+                            ajaxify.data.tid,
                         );
-                    }
+                    },
                 );
             selectionTooltip.removeClass("hidden");
             $(window).one("action:ajaxify.start", function () {

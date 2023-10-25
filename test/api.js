@@ -41,7 +41,7 @@ describe("API", async () => {
     const readApiPath = path.resolve(__dirname, "../public/openapi/read.yaml");
     const writeApiPath = path.resolve(
         __dirname,
-        "../public/openapi/write.yaml"
+        "../public/openapi/write.yaml",
     );
     let jar;
     let csrfToken;
@@ -61,7 +61,7 @@ describe("API", async () => {
                                 template: "digest",
                                 uid: 1,
                             },
-                            nconf.get("secret")
+                            nconf.get("secret"),
                         ))(),
                 },
             ],
@@ -119,7 +119,7 @@ describe("API", async () => {
         plugins.hooks.unregister(
             "core",
             "filter:search.query",
-            dummySearchHook
+            dummySearchHook,
         );
         plugins.hooks.unregister("emailer-test", "filter:email.send");
     });
@@ -214,7 +214,7 @@ describe("API", async () => {
             1,
             unprivUid,
             "sample reasons",
-            Date.now()
+            Date.now(),
         ); // deleted in DELETE /api/v3/flags/1
         await flags.appendNote(flagId, 1, "test note", 1626446956652);
         await flags.create("post", 2, unprivUid, "sample reasons", Date.now()); // for testing flag notes (since flag 1 deleted)
@@ -226,14 +226,14 @@ describe("API", async () => {
         fs.closeSync(
             fs.openSync(
                 path.resolve(nconf.get("upload_path"), "files/test.txt"),
-                "w"
-            )
+                "w",
+            ),
         );
         fs.closeSync(
             fs.openSync(
                 path.resolve(nconf.get("upload_path"), "files/test.png"),
-                "w"
-            )
+                "w",
+            ),
         );
 
         // Associate thumb with topic to test thumb reordering
@@ -345,8 +345,8 @@ describe("API", async () => {
             (path) =>
                 path.method !== "_all" &&
                 !exclusionPrefixes.some((prefix) =>
-                    path.path.startsWith(prefix)
-                )
+                    path.path.startsWith(prefix),
+                ),
         );
 
         // For each express path, query for existence in read and write api schemas
@@ -369,15 +369,15 @@ describe("API", async () => {
                         .replace(/\?/g, "");
                     assert(
                         schema.paths.hasOwnProperty(normalizedPath),
-                        `${pathObj.path} is not defined in schema docs`
+                        `${pathObj.path} is not defined in schema docs`,
                     );
                     assert(
                         schema.paths[normalizedPath].hasOwnProperty(
-                            pathObj.method
+                            pathObj.method,
                         ),
                         `${
                             pathObj.path
-                        } was found in schema docs, but ${pathObj.method.toUpperCase()} method is not defined`
+                        } was found in schema docs, but ${pathObj.method.toUpperCase()} method is not defined`,
                     );
                 });
             });
@@ -388,7 +388,7 @@ describe("API", async () => {
     generateTests(
         writeApi,
         Object.keys(writeApi.paths),
-        writeApi.servers[0].url
+        writeApi.servers[0].url,
     );
 
     function generateTests(api, paths, prefix) {
@@ -417,18 +417,18 @@ describe("API", async () => {
                     }
 
                     const pathParams = (path.match(/{[\w\-_*]+}?/g) || []).map(
-                        (match) => match.slice(1, -1)
+                        (match) => match.slice(1, -1),
                     );
                     const schemaParams = context[method].parameters
                         .map((param) =>
-                            param.in === "path" ? param.name : null
+                            param.in === "path" ? param.name : null,
                         )
                         .filter(Boolean);
                     assert(
                         pathParams.every((param) =>
-                            schemaParams.includes(param)
+                            schemaParams.includes(param),
                         ),
-                        `${method.toUpperCase()} ${path} has path parameters specified but not defined`
+                        `${method.toUpperCase()} ${path} has path parameters specified but not defined`,
                     );
                 });
 
@@ -444,14 +444,14 @@ describe("API", async () => {
                             assert(
                                 param.example !== null &&
                                     param.example !== undefined,
-                                `${method.toUpperCase()} ${path} has parameters without examples`
+                                `${method.toUpperCase()} ${path} has parameters without examples`,
                             );
 
                             switch (param.in) {
                                 case "path":
                                     testPath = testPath.replace(
                                         `{${param.name}}`,
-                                        param.example
+                                        param.example,
                                     );
                                     break;
                                 case "header":
@@ -476,54 +476,54 @@ describe("API", async () => {
                         assert(context[method].requestBody, failMessage);
                         assert(
                             context[method].requestBody.content,
-                            failMessage
+                            failMessage,
                         );
 
                         if (
                             context[method].requestBody.content.hasOwnProperty(
-                                "application/json"
+                                "application/json",
                             )
                         ) {
                             assert(
                                 context[method].requestBody.content[
                                     "application/json"
                                 ],
-                                failMessage
+                                failMessage,
                             );
                             assert(
                                 context[method].requestBody.content[
                                     "application/json"
                                 ].schema,
-                                failMessage
+                                failMessage,
                             );
                             assert(
                                 context[method].requestBody.content[
                                     "application/json"
                                 ].schema.properties,
-                                failMessage
+                                failMessage,
                             );
                         } else if (
                             context[method].requestBody.content.hasOwnProperty(
-                                "multipart/form-data"
+                                "multipart/form-data",
                             )
                         ) {
                             assert(
                                 context[method].requestBody.content[
                                     "multipart/form-data"
                                 ],
-                                failMessage
+                                failMessage,
                             );
                             assert(
                                 context[method].requestBody.content[
                                     "multipart/form-data"
                                 ].schema,
-                                failMessage
+                                failMessage,
                             );
                             assert(
                                 context[method].requestBody.content[
                                     "multipart/form-data"
                                 ].schema.properties,
-                                failMessage
+                                failMessage,
                             );
                         }
                     }
@@ -545,7 +545,7 @@ describe("API", async () => {
                         body = buildBody(
                             context[method].requestBody.content[
                                 "application/json"
-                            ].schema.properties
+                            ].schema.properties,
                         );
                     } else if (
                         context[method].hasOwnProperty("requestBody") &&
@@ -584,7 +584,7 @@ describe("API", async () => {
                                             return reject(err);
                                         }
                                         resolve(res);
-                                    }
+                                    },
                                 );
                             });
                         }
@@ -593,7 +593,7 @@ describe("API", async () => {
                             !e,
                             `${method.toUpperCase()} ${path} errored with: ${
                                 e.message
-                            }`
+                            }`,
                         );
                     }
                 });
@@ -604,11 +604,11 @@ describe("API", async () => {
                         response.statusCode === 403 || // Check for 403 Forbidden
                             context[method].responses.hasOwnProperty("418") ||
                             Object.keys(context[method].responses).includes(
-                                String(response.statusCode)
+                                String(response.statusCode),
                             ),
                         `${method.toUpperCase()} ${path} sent back unexpected HTTP status code: ${
                             response.statusCode
-                        } ${JSON.stringify(response.body)}`
+                        } ${JSON.stringify(response.body)}`,
                     );
                 });
 
@@ -618,11 +618,11 @@ describe("API", async () => {
                     if (http302 && response.statusCode === 302) {
                         // Compare headers instead
                         const expectedHeaders = Object.keys(
-                            http302.headers
+                            http302.headers,
                         ).reduce((memo, name) => {
                             const value = http302.headers[name].schema.example;
                             memo[name] = value.startsWith(
-                                nconf.get("relative_path")
+                                nconf.get("relative_path"),
                             )
                                 ? value
                                 : nconf.get("relative_path") + value;
@@ -633,7 +633,7 @@ describe("API", async () => {
                             assert(response.headers[header.toLowerCase()]);
                             assert.strictEqual(
                                 response.headers[header.toLowerCase()],
-                                expectedHeaders[header]
+                                expectedHeaders[header],
                             );
                         }
                         return;
@@ -654,8 +654,8 @@ describe("API", async () => {
                     assert(
                         expectedStatusCodes.includes(response.statusCode),
                         `HTTP ${expectedStatusCodes.join(
-                            " or "
-                        )} expected (path: ${method} ${path})`
+                            " or ",
+                        )} expected (path: ${method} ${path})`,
                     );
 
                     const hasJSON =
@@ -670,7 +670,7 @@ describe("API", async () => {
                             response.body,
                             method.toUpperCase(),
                             path,
-                            "root"
+                            "root",
                         );
                     }
 
@@ -687,7 +687,7 @@ describe("API", async () => {
                     ) {
                         ({ jar } = await helpers.loginUser("admin", "123456"));
                         const sessionUUIDs = await db.getObject(
-                            "uid:1:sessionUUID:sessionId"
+                            "uid:1:sessionUUID:sessionId",
                         );
                         mocks.delete[
                             "/users/{uid}/sessions/{uuid}"
@@ -709,12 +709,12 @@ describe("API", async () => {
                     ];
                     if (
                         affectedPaths.includes(
-                            `${method.toUpperCase()} ${path}`
+                            `${method.toUpperCase()} ${path}`,
                         )
                     ) {
                         await request({
                             uri: `${nconf.get(
-                                "url"
+                                "url",
                             )}/register/abort?_csrf=${csrfToken}`,
                             method: "POST",
                             jar,
@@ -736,7 +736,7 @@ describe("API", async () => {
     function compare(schema, response, method, path, context) {
         let required = [];
         const additionalProperties = schema.hasOwnProperty(
-            "additionalProperties"
+            "additionalProperties",
         );
 
         function flattenAllOf(obj) {
@@ -748,11 +748,11 @@ describe("API", async () => {
                         required = required.concat(
                             obj.required
                                 ? obj.required
-                                : Object.keys(obj.properties)
+                                : Object.keys(obj.properties),
                         );
                     } catch (e) {
                         assert.fail(
-                            `Syntax error re: allOf, perhaps you allOf'd an array? (path: ${method} ${path}, context: ${context})`
+                            `Syntax error re: allOf, perhaps you allOf'd an array? (path: ${method} ${path}, context: ${context})`,
                         );
                     }
                 }
@@ -776,7 +776,7 @@ describe("API", async () => {
             if (schema.hasOwnProperty(prop)) {
                 assert(
                     response.hasOwnProperty(prop),
-                    `"${prop}" is a required property (path: ${method} ${path}, context: ${context})`
+                    `"${prop}" is a required property (path: ${method} ${path}, context: ${context})`,
                 );
 
                 // Don't proceed with type-check if the value could possibly be unset (nullable: true, in spec)
@@ -787,7 +787,7 @@ describe("API", async () => {
                 // Therefore, if the value is actually null, that's a problem (nullable is probably missing)
                 assert(
                     response[prop] !== null,
-                    `"${prop}" was null, but schema does not specify it to be a nullable property (path: ${method} ${path}, context: ${context})`
+                    `"${prop}" was null, but schema does not specify it to be a nullable property (path: ${method} ${path}, context: ${context})`,
                 );
 
                 switch (schema[prop].type) {
@@ -797,7 +797,7 @@ describe("API", async () => {
                             "string",
                             `"${prop}" was expected to be a string, but was ${typeof response[
                                 prop
-                            ]} instead (path: ${method} ${path}, context: ${context})`
+                            ]} instead (path: ${method} ${path}, context: ${context})`,
                         );
                         break;
                     case "boolean":
@@ -806,7 +806,7 @@ describe("API", async () => {
                             "boolean",
                             `"${prop}" was expected to be a boolean, but was ${typeof response[
                                 prop
-                            ]} instead (path: ${method} ${path}, context: ${context})`
+                            ]} instead (path: ${method} ${path}, context: ${context})`,
                         );
                         break;
                     case "object":
@@ -815,14 +815,14 @@ describe("API", async () => {
                             "object",
                             `"${prop}" was expected to be an object, but was ${typeof response[
                                 prop
-                            ]} instead (path: ${method} ${path}, context: ${context})`
+                            ]} instead (path: ${method} ${path}, context: ${context})`,
                         );
                         compare(
                             schema[prop],
                             response[prop],
                             method,
                             path,
-                            context ? [context, prop].join(".") : prop
+                            context ? [context, prop].join(".") : prop,
                         );
                         break;
                     case "array":
@@ -831,7 +831,7 @@ describe("API", async () => {
                             true,
                             `"${prop}" was expected to be an array, but was ${typeof response[
                                 prop
-                            ]} instead (path: ${method} ${path}, context: ${context})`
+                            ]} instead (path: ${method} ${path}, context: ${context})`,
                         );
 
                         if (schema[prop].items) {
@@ -839,7 +839,7 @@ describe("API", async () => {
                             assert(
                                 schema[prop].items.type ||
                                     schema[prop].items.allOf,
-                                `"${prop}" is defined to be an array, but its items have no schema defined (path: ${method} ${path}, context: ${context})`
+                                `"${prop}" is defined to be an array, but its items have no schema defined (path: ${method} ${path}, context: ${context})`,
                             );
 
                             // Compare types
@@ -855,7 +855,7 @@ describe("API", async () => {
                                         path,
                                         context
                                             ? [context, prop].join(".")
-                                            : prop
+                                            : prop,
                                     );
                                 });
                             } else if (response[prop].length) {
@@ -866,7 +866,7 @@ describe("API", async () => {
                                         schema[prop].items.type,
                                         `"${prop}" should have ${
                                             schema[prop].items.type
-                                        } items, but found ${typeof items} instead (path: ${method} ${path}, context: ${context})`
+                                        } items, but found ${typeof items} instead (path: ${method} ${path}, context: ${context})`,
                                     );
                                 });
                             }
@@ -885,7 +885,7 @@ describe("API", async () => {
 
             assert(
                 schema[prop],
-                `"${prop}" was found in response, but is not defined in schema (path: ${method} ${path}, context: ${context})`
+                `"${prop}" was found in response, but is not defined in schema (path: ${method} ${path}, context: ${context})`,
             );
         });
     }

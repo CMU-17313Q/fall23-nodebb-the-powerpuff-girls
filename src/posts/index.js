@@ -37,7 +37,7 @@ require("./actions")(Posts); // calling a functtion imported from actions module
 
 Posts.exists = async function (pids) {
     return await db.exists(
-        Array.isArray(pids) ? pids.map((pid) => `post:${pid}`) : `post:${pids}`
+        Array.isArray(pids) ? pids.map((pid) => `post:${pid}`) : `post:${pids}`,
     );
 };
 
@@ -48,7 +48,7 @@ Posts.getPidsFromSet = async function (set, start, stop, reverse) {
     return await db[reverse ? "getSortedSetRevRange" : "getSortedSetRange"](
         set,
         start,
-        stop
+        stop,
     );
 };
 
@@ -86,7 +86,7 @@ Posts.getPidIndex = async function (pid, tid, topicPostSort) {
         topicPostSort === "newest_to_oldest" || topicPostSort === "most_votes";
     const index = await db[reverse ? "sortedSetRevRank" : "sortedSetRank"](
         set,
-        pid
+        pid,
     );
     if (!utils.isNumber(index)) {
         return 0;
@@ -102,7 +102,7 @@ Posts.getPostIndices = async function (posts, uid) {
 
     const byVotes = settings.topicPostSort === "most_votes";
     let sets = posts.map((p) =>
-        byVotes ? `tid:${p.tid}:posts:votes` : `tid:${p.tid}:posts`
+        byVotes ? `tid:${p.tid}:posts:votes` : `tid:${p.tid}:posts`,
     );
     const reverse =
         settings.topicPostSort === "newest_to_oldest" ||
@@ -118,7 +118,7 @@ Posts.getPostIndices = async function (posts, uid) {
     const pids = posts.map((post) => post.pid);
     const indices = await db[method](sets, pids);
     return indices.map((index) =>
-        utils.isNumber(index) ? parseInt(index, 10) + 1 : 0
+        utils.isNumber(index) ? parseInt(index, 10) + 1 : 0,
     );
 };
 

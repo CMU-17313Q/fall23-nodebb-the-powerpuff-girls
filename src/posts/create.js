@@ -88,7 +88,7 @@ module.exports = function (Posts) {
             db.sortedSetAdd(
                 `pid:${postData.toPid}:replies`,
                 timestamp,
-                postData.pid
+                postData.pid,
             ),
             db.incrObjectField(`post:${postData.toPid}`, "replies"),
         ]);

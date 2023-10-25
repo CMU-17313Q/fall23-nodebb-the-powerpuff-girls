@@ -78,7 +78,7 @@ Topics.pin = async (req, res) => {
         await topics.tools.setPinExpiry(
             req.params.tid,
             req.body.expiry,
-            req.uid
+            req.uid,
         );
     }
     await api.topics.pin(req, { tids: [req.params.tid] });
@@ -152,7 +152,7 @@ Topics.getThumbs = async (req, res) => {
     helpers.formatApiResponse(
         200,
         res,
-        await topics.thumbs.get(req.params.tid)
+        await topics.thumbs.get(req.params.tid),
     );
 };
 
@@ -172,7 +172,7 @@ Topics.addThumb = async (req, res) => {
                     id: req.params.tid,
                     path: fileObj.path || fileObj.url,
                 });
-            })
+            }),
         );
     }
 };
@@ -207,7 +207,7 @@ Topics.deleteThumb = async (req, res) => {
     helpers.formatApiResponse(
         200,
         res,
-        await topics.thumbs.get(req.params.tid)
+        await topics.thumbs.get(req.params.tid),
     );
 };
 
@@ -240,7 +240,7 @@ async function checkThumbPrivileges({ tid, uid, res }) {
         return helpers.formatApiResponse(
             404,
             res,
-            new Error("[[error:no-topic]]")
+            new Error("[[error:no-topic]]"),
         );
     }
 
@@ -249,7 +249,7 @@ async function checkThumbPrivileges({ tid, uid, res }) {
         return helpers.formatApiResponse(
             403,
             res,
-            new Error("[[error:no-privileges]]")
+            new Error("[[error:no-privileges]]"),
         );
     }
 }
@@ -264,7 +264,7 @@ Topics.getEvents = async (req, res) => {
     helpers.formatApiResponse(
         200,
         res,
-        await topics.events.get(req.params.tid, req.uid)
+        await topics.events.get(req.params.tid, req.uid),
     );
 };
 

@@ -16,7 +16,7 @@ Posts.get = async (req, res) => {
     helpers.formatApiResponse(
         200,
         res,
-        await api.posts.get(req, { pid: req.params.pid })
+        await api.posts.get(req, { pid: req.params.pid }),
     );
 };
 
@@ -94,7 +94,7 @@ Posts.getDiffs = async (req, res) => {
     helpers.formatApiResponse(
         200,
         res,
-        await api.posts.getDiffs(req, { ...req.params })
+        await api.posts.getDiffs(req, { ...req.params }),
     );
 };
 
@@ -102,7 +102,7 @@ Posts.loadDiff = async (req, res) => {
     helpers.formatApiResponse(
         200,
         res,
-        await api.posts.loadDiff(req, { ...req.params })
+        await api.posts.loadDiff(req, { ...req.params }),
     );
 };
 
@@ -110,7 +110,7 @@ Posts.restoreDiff = async (req, res) => {
     helpers.formatApiResponse(
         200,
         res,
-        await api.posts.restoreDiff(req, { ...req.params })
+        await api.posts.restoreDiff(req, { ...req.params }),
     );
 };
 
@@ -129,7 +129,7 @@ Posts.deleteDiff = async (req, res) => {
         return helpers.formatApiResponse(
             403,
             res,
-            new Error("[[error:no-privileges]]")
+            new Error("[[error:no-privileges]]"),
         );
     }
 
@@ -138,7 +138,7 @@ Posts.deleteDiff = async (req, res) => {
     helpers.formatApiResponse(
         200,
         res,
-        await api.posts.getDiffs(req, { ...req.params })
+        await api.posts.getDiffs(req, { ...req.params }),
     );
 };
 

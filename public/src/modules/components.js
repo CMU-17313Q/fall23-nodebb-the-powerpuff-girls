@@ -11,7 +11,7 @@ define("components", function () {
                 return $(
                     '[component="category/topic"][data-tid="' +
                         tid +
-                        '"] [component="topic/teaser"]'
+                        '"] [component="topic/teaser"]',
                 );
             }
             return $('[component="topic/teaser"]');
@@ -26,35 +26,35 @@ define("components", function () {
             return $(
                 '[component="post"][data-pid="' +
                     pid +
-                    '"] [component="post/content"]'
+                    '"] [component="post/content"]',
             );
         },
         "post/header": function (pid) {
             return $(
                 '[component="post"][data-pid="' +
                     pid +
-                    '"] [component="post/header"]'
+                    '"] [component="post/header"]',
             );
         },
         "post/anchor": function (index) {
             return $(
                 '[component="post"][data-index="' +
                     index +
-                    '"] [component="post/anchor"]'
+                    '"] [component="post/anchor"]',
             );
         },
         "post/vote-count": function (pid) {
             return $(
                 '[component="post"][data-pid="' +
                     pid +
-                    '"] [component="post/vote-count"]'
+                    '"] [component="post/vote-count"]',
             );
         },
         "post/bookmark-count": function (pid) {
             return $(
                 '[component="post"][data-pid="' +
                     pid +
-                    '"] [component="post/bookmark-count"]'
+                    '"] [component="post/bookmark-count"]',
             );
         },
 
@@ -62,7 +62,7 @@ define("components", function () {
             return $(
                 '[component="post"][data-pid="' +
                     pid +
-                    '"] [component="post/is-endorsed"]'
+                    '"] [component="post/is-endorsed"]',
             );
         },
 
@@ -79,7 +79,7 @@ define("components", function () {
                     name +
                     '="' +
                     value +
-                    '"]'
+                    '"]',
             );
         },
 
@@ -89,13 +89,13 @@ define("components", function () {
                     name +
                     '="' +
                     value +
-                    '"]'
+                    '"]',
             );
         },
 
         "chat/message": function (messageId) {
             return $(
-                '[component="chat/message"][data-mid="' + messageId + '"]'
+                '[component="chat/message"][data-mid="' + messageId + '"]',
             );
         },
 
@@ -103,13 +103,13 @@ define("components", function () {
             return $(
                 '[component="chat/message"][data-mid="' +
                     messageId +
-                    '"] [component="chat/message/body"]'
+                    '"] [component="chat/message/body"]',
             );
         },
 
         "chat/recent/room": function (roomid) {
             return $(
-                '[component="chat/recent/room"][data-roomid="' + roomid + '"]'
+                '[component="chat/recent/room"][data-roomid="' + roomid + '"]',
             );
         },
     };
