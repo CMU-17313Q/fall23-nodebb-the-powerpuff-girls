@@ -23,6 +23,5 @@ ENV NODE_ENV=production \
     silent=false
 
 EXPOSE 4567
-
+RUN chmod +x create_config.sh
 CMD  ./create_config.sh -n "${SETUP}" && ./nodebb setup || node ./nodebb build; node ./nodebb start
-
