@@ -8,6 +8,6 @@ const routeHelpers = require("../helpers");
 const router = express.Router();
 const { setupApiRoute } = routeHelpers;
 module.exports = function () {
-    setupApiRoute(router, 'post', '/signup', [], controllers.write.career.signup);
+    setupApiRoute(router, 'post', '/register', [], controllers.write.career.register);
     return router;
 };

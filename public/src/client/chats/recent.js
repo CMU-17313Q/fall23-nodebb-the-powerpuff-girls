@@ -1,24 +1,8 @@
-'use strict';
+// 'use strict';
 
 
 define('forum/chats/recent', ['alerts'], function (alerts) {
     const recent = {};
-
-    recent.init = function () {
-        require(['forum/chats'], function (Chats) {
-            $('[component="chat/recent"]').on('click', '[component="chat/recent/room"]', function () {
-                Chats.switchChat($(this).attr('data-roomid'));
-            });
-
-            $('[component="chat/recent"]').on('scroll', function () {
-                const $this = $(this);
-                const bottom = ($this[0].scrollHeight - $this.height()) * 0.9;
-                if ($this.scrollTop() > bottom) {
-                    loadMoreRecentChats();
-                }
-            });
-        });
-    };
 
     function loadMoreRecentChats() {
         const recentChats = $('[component="chat/recent"]');
@@ -44,6 +28,23 @@ define('forum/chats/recent', ['alerts'], function (alerts) {
             }
         });
     }
+    recent.init = function () {
+        require(['forum/chats'], function (Chats) {
+            $('[component="chat/recent"]').on('click', '[component="chat/recent/room"]', function () {
+                Chats.switchChat($(this).attr('data-roomid'));
+            });
+
+            $('[component="chat/recent"]').on('scroll', function () {
+                const $this = $(this);
+                const bottom = ($this[0].scrollHeight - $this.height()) * 0.9;
+                if ($this.scrollTop() > bottom) {
+                    loadMoreRecentChats();
+                }
+            });
+        });
+    };
+
+
 
     function onRecentChatsLoaded(data, callback) {
         if (!data.rooms.length) {
