@@ -481,7 +481,7 @@ helpers.formatApiResponse = async (statusCode, res, payload) => {
         returnPayload.response = response;
 
         if (global.env === 'development') {
-            returnPayload.stack = payload.stack;
+            // returnPayload.stack = payload.stack;
             process.stdout.write(`[${chalk.yellow('api')}] Exception caught, error with stack trace follows:\n`);
             process.stdout.write(payload.stack);
         }
