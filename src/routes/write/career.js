@@ -1,9 +1,9 @@
-"use strict";
+'use strict';
 
-Object.defineProperty(exports, "__esModule", { value: true });
-const express = require("express");
-const controllers = require("../../controllers");
-const routeHelpers = require("../helpers");
+Object.defineProperty(exports, '__esModule', { value: true });
+const express = require('express');
+const controllers = require('../../controllers');
+const routeHelpers = require('../helpers');
 
 const router = express.Router();
 const { setupApiRoute } = routeHelpers;
